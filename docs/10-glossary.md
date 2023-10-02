@@ -18,7 +18,7 @@ FM
 NC
   ~ Narrow-band Continuum RCF channels
 
-PC
+TC
   ~ Pulsar timing RCF channels
 
 SRM

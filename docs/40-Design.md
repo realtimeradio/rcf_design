@@ -1,9 +1,8 @@
 # Design
-## Frequency Channel Response
 
-\section{Specifications}
+## Specifications
 
-\subsubsection{Frequency Channels}
+### Frequency Channels
 
 \begin{center}
 \begin{tabular}{ccccc}
@@ -29,4 +28,11 @@
 \end{center}
 
 
+### Frequency Channel Response
+
+## Hardware
+
+### Rack Layout
+
+![](images/rack_layout_rcf.drawio.png)
 

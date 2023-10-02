@@ -55,7 +55,7 @@ The following table summarises *RcfR-0001* through *RcfR-0004*, the bandwidth an
 | *RcfR-0001* | NC | $700 - 2000$           | $\geq 1300$     | $< 142$          |
 | *RcfR-0002* | AC | $1388 - 1422$          | $\geq 34$       | $< 9.25$         |
 | *RcfR-0003* | BC | $1419.93 - 1420.88$    | $\geq 0.95$     | $< 1.42$         |
-| *RcfR-0004* | PC | $700 - 2000$           | $1300$            | $<2048$          |
+| *RcfR-0004* | TC | $700 - 2000$           | $1300$            | $<2048$          |
 
 
 

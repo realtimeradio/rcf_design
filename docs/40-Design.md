@@ -6,7 +6,7 @@ Here the preliminary design of the Radio Camera Frontent (RCF) is described.
 
 The top-level RCF interfaces are shown in Figure \ref{fig:rcf-interfaces}.
 
-![\label{fig:rcf-interfaces}Top-level interfaces to the RCF subsystem. 4000 RF signals are delivered by ASP, which must be digitized and channelized before being passed to SNW. Some data (used for beamforming) is returned to RCF from SNW, beamformed, and then delivered back to SNW](images/rcf-interfaces.drawio.png)
+![\label{fig:rcf-interfaces}Top-level interfaces to the RCF subsystem. 4000 RF signals are delivered by ASP, which must be digitized and channelized before being passed to SNW. Some data (used for beamforming) is returned to RCF from SNW, beamformed, and then delivered back to SNW](images/rcf-interfaces.drawio.pdf)
 
 The primary inputs to RCF are the 4000 RF signals (2000 dual-polarization) provided by the ASP subsystem.
 The primary outputs of RCF are all digital data streams transmitted to SNW.
@@ -19,7 +19,7 @@ A major interface also exists between RCF and MNC in order to facilitate runtime
 
 It is useful to further break down the RCF system into its constituent logical components, as shown in Figure \ref{fig:rcf-logical-components}.
 
-![\label{fig:rcf-logical-components}Logical components of the RCF subsystem.](images/rcf-interfaces-logical.drawio.png)
+![\label{fig:rcf-logical-components}Logical components of the RCF subsystem.](images/rcf-interfaces-logical.drawio.pdf)
 
 ## Specifications
 
@@ -41,14 +41,14 @@ It is useful to further break down the RCF system into its constituent logical c
 
 ### Rack Layout
 
-![](images/rack_layout_rcf.drawio.png)
+![](images/rack_layout.drawio.pdf)
 
 ## Firmware
 ### Processing Pipeline
 
-![\label{fig:firmware}](images/rcf-firmware.drawio.rot270.png)
+![\label{fig:firmware}](images/rcf-firmware.drawio.rot270.pdf)
 
-![\label{fig:adc-config}](images/rcf-adc-pipeline.drawio.png)
+![\label{fig:adc-config}](images/rcf-adc-pipeline.drawio.pdf)
 
 Figure \ref{fig:firmware}
 

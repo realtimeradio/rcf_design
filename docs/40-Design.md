@@ -30,7 +30,7 @@ It is useful to further break down the RCF system into its constituent logical c
 | NC | 1300                    | 130.2                   | 10000              | 1302.1                |
 | AC | 34                      | 8.138                   | 4192               | 34.1                  |
 | BC | 0.95                    | 1.017                   | 960                | 0.977                 |
-| TC | 1300                    | 2.083                   | 624                | 1300                  |
+| TC | 1300                    | 2083                   | 624                | 1300                  |
 | TOTAL (excluding TC) | 1334.95 | -   | 15152 | 1337.2  |
 | TOTAL         | 2634.95                 | -                       | 15776              | 2637.2                |
 

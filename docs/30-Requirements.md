@@ -91,7 +91,7 @@ For DSA-2000, it is useful to be able to track the doppler shift in real-time ov
 
 The following requirement is created:
 
-- *RcfR-0006*: Over a period of 100 hours, the center frequency of any RCF frequency channel shall not shift by $>10%$ of the channel width.
+- *RcfR-0006*: Over a period of 100 hours, the center frequency of any RCF frequency channel shall not shift by $>10\%$ of the channel width.
 
 <!--
 \subsubsection{Doppler Tracking}
@@ -174,14 +174,14 @@ This yields the further requirement:
 The following table summarises the derived RCF requirements:
 
 | Subsystem Requirement| Description |
-| --------------------- | ------------------------------------------------- |
+| ------------ | ------------------------------------------------- |
 | *RcfR-0001* | RCF shall generate channels with width $< 142$ kHz over the frequency range 0.7 to 2.0 GHz. |
 | *RcfR-0002* | RCF shall generate channels with width $< 9.25$ kHz over a tunable band between 0.7 and 2.0 GHz|
 | *RcfR-0003* | RCF shall generate channels with width $< 1.42$ kHz over a tunable band between 0.7 and 2.0 GHz|
 | *RcfR-0004* | RCF shall generate channels with width $< 2.048$ MHz over the frequency range 0.7 to 2.0 GHz. |
 | *RcfR-0005* | RCF shall generate channels which attenuate a signal at the center of an adjacent channel by $\geq 60$ dB. |
-| *RcfR-0006* | Over a period of 100 hours, the center frequency of any RCF frequency channel shall not shift by $>10%$ of the channel width. |
-| *RcfR-0007* | RCF shall have sufficient time delay buffers to compensate for up to 50 usec. |
+| *RcfR-0006* | Over a period of 100 hours, the center frequency of any RCF frequency channel shall not shift by $>10\%$ of the channel width. |
+| *RcfR-0007* | RCF shall have sufficient time delay buffers to compensate for up to 50 usec delay in the time-domain for all data products. |
 | *RcfR-0008* | Where RCF is required to generate beams from multiple antenna elements, it must be capable of compensating for delays up to 125 usec. |
 | *RcfR-0009* | RCF shall ensure that, after applying a delay correction to a data stream to phase it to a particular sky position, the residual error across any frequency channel shall be $<1^\circ$. |
 | *RcfR-00010* | RCF shall be capable of updating the delay applied to each antenna signal at least 2628 times per second. |

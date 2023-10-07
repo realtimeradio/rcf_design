@@ -11,7 +11,7 @@ A number of requirements directly relating to frequency coverage and channel res
 These are:
 
  1. ScR-0004: Frequency coverage from 0.7 to 2.0 GHz
- 1. ScR-0026 [High-z continuum]: HI velocity resolution of $<60$ km/s for galaxies $>-1000$ km/s and $z<1$
+ 1. ScR-0026 [High-z continuum]: HI velocity resolution of $<62$ km/s for galaxies $>-1000$ km/s and $z<1$
  1. ScR-0027 [Zoom A]: HI velocity resolution <2 km/s for galaxies >-500 km/s and distance $<100$ Mpc.
  1. ScR-0028 [Zoom B]: HI velocity resolution <0.3 km/s for galactic HI, covering HI emission between -100 km/s and +100 km/s.
  1. ScR-0029 [Tunability]: Zoom bands A and B should be tunable.
@@ -21,7 +21,7 @@ These are:
 From these requirements, the following resolutions and bandwidths are inferred:
 
  1. ScR-0004: Total coverage 0.7 to 2.0 GHz
- 1. ScR-0026 [High-z continuum]: Coverage from 0.71 to 1.425  GHz, at $<142$ kHz resolution at 0.71 GHz and $< 285$ kHz resolution at 1.425 GHz.
+ 1. ScR-0026 [High-z continuum]: Coverage from 0.71 to 1.425  GHz, at $<146.8$ kHz resolution at 0.71 GHz and $< 294.5$ kHz resolution at 1.425 GHz.
  1. ScR-0027 [Zoom A]: Coverage from 1.388 to 1.422 GHz, at $<9.25$ kHz (at 1.388  GHz).\footnote{The minimum frequency is computed by converting 100 Mpc to a redshift, using a Hubble constant of 70 $\frac{\mathrm{km/s}}{\mathrm{Mpc}}$.}
  1. ScR-0028 [Zoom B]: Coverage of 1419.93 -- 1420.88 MHz with a channel width $<1.42$ kHz.
  1. ScR-0029: Center frequency of Zoom A and Zoom B windows is arbitrarily tunable within the 0.7 -- 2.0 GHz band, with resolution and bandwidth set by ScR-0027 and ScR-0028.
@@ -41,7 +41,7 @@ $$
     \Delta f \ll 1529 \mathrm{kHz} .
 $$
 
-There is no explicit requirement on how much smearing is tolerable, but, noting that the most stringent ScR-0026 frequency resolution requirement demands a channel width of less than 142 kHz at 0.71 GHz, this width is taken as a minimum requirement over the entire band.
+There is no explicit requirement on how much smearing is tolerable, but, noting that the most stringent ScR-0026 frequency resolution requirement demands a channel width of less than 146.8 kHz at 0.71 GHz, this width is taken as a minimum requirement over the entire band.
 
  > The memory footprint of RCF processing is strongly dependent on the frequency resolution of channels which may be generated -- narrow channel bandwidth requires more memory.
  > Downstream RCP processing is also strongly dependent on the number of frequency channels which need to be imaged -- more numerous, narrower channels require more processing.
@@ -54,7 +54,7 @@ The following table summarises *RcfR-0001* through *RcfR-0004*, the bandwidth an
 | ----------- | ------------ | --------------------- | --------------- | ---------------- |
 | *RcfR-0001* | NC | $700 - 2000$           | $\geq 1300$     | $< 142$          |
 | *RcfR-0002* | AC | $1388 - 1422$          | $\geq 34$       | $< 9.25$         |
-| *RcfR-0003* | BC | $1419.93 - 1420.88$    | $\geq 0.95$     | $< 1.42$         |
+| *RcfR-0003* | BC | $1419.93 - 1420.88$    | $\geq 0.95$     | $< 1.46.8$         |
 | *RcfR-0004* | TC | $700 - 2000$           | $1300$            | $<2048$          |
 
 
@@ -174,8 +174,8 @@ This yields the further requirement:
 The following table summarises the derived RCF requirements:
 
 | Subsystem Requirement| Description |
-| ------------ | ------------------------------------------------- |
-| *RcfR-0001* | RCF shall generate channels with width $< 142$ kHz over the frequency range 0.7 to 2.0 GHz. |
+| --------------------- | ------------------------------------------------- |
+| *RcfR-0001* | RCF shall generate channels with width $< 146.8$ kHz over the frequency range 0.7 to 2.0 GHz. |
 | *RcfR-0002* | RCF shall generate channels with width $< 9.25$ kHz over a tunable band between 0.7 and 2.0 GHz|
 | *RcfR-0003* | RCF shall generate channels with width $< 1.42$ kHz over a tunable band between 0.7 and 2.0 GHz|
 | *RcfR-0004* | RCF shall generate channels with width $< 2.048$ MHz over the frequency range 0.7 to 2.0 GHz. |

@@ -4,7 +4,7 @@ A number of science requirements are defined for the DSA2000 system, each design
 
 Here we consider the requirements which are relevant to the design of the RCF, and derive a set of subsystem requirements with designations "RcfR-XXXX".
 
-## Frequency Resolutions and Spans
+## Frequency Resolutions and Spans \label{sec:freq-res}
 
 A number of requirements directly relating to frequency coverage and channel resolutions are present in DSA2000 science requirements.
 
@@ -52,9 +52,9 @@ The following table summarises *RcfR-0001* through *RcfR-0004*, the bandwidth an
 
 | Requirement | RCF Product Abbreviation| Frequency Range (MHz) | Bandwidth (MHz) | $\Delta f$ (kHz) |
 | ----------- | ------------ | --------------------- | --------------- | ---------------- |
-| *RcfR-0001* | NC | $700 - 2000$           | $\geq 1300$     | $< 142$          |
+| *RcfR-0001* | NC | $700 - 2000$           | $\geq 1300$     | $< 146.8$          |
 | *RcfR-0002* | AC | $1388 - 1422$          | $\geq 34$       | $< 9.25$         |
-| *RcfR-0003* | BC | $1419.93 - 1420.88$    | $\geq 0.95$     | $< 1.46.8$         |
+| *RcfR-0003* | BC | $1419.93 - 1420.88$    | $\geq 0.95$     | $< 1.42$         |
 | *RcfR-0004* | TC | $700 - 2000$           | $1300$            | $<2048$          |
 
 

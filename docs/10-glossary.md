@@ -12,8 +12,8 @@ BC
 FPGA
   ~ Field-Programmable Gate Array
 
-FM
-  ~ FPGA Module. An FPGA-based processing module responsible for digitizing and channelizing signals from a single antenna.
+FSM
+  ~ FPGA Station Module. An FPGA-based processing module responsible for digitizing and channelizing signals from a single antenna.
 
 NC
   ~ Narrow-band Continuum RCF channels

@@ -72,6 +72,11 @@ This is discussed in more detail in Section \ref{sec:Firmware}.
 The AD9207 outputs digitized data using the industry-standard JESD204C interface, which is a high-speed serial interface capable of transporting data on up to 16 data lanes at up to 32 Gbps per lane.
 The AD9207 configuration required by RCF utilises a JESD204C interface to an FPGA on the FSM with 8 data lanes, and a lane rate of 13.2 Gb/s per lane.
 
+
+[^ad9207]: See [https://www.analog.com/en/products/ad9207.html](https://www.analog.com/en/products/ad9207.html)
+
+[^iwave]: See [https://www.iwavesystems.com/product/zu19-zu17-zu11-zynq-ultrascale-mpsocsom/](https://www.iwavesystems.com/product/zu19-zu17-zu11-zynq-ultrascale-mpsocsom/)
+
 #### FPGA System-on-Module
 
 FPGAs at a vast array of price points and peformance levels and may be purchased in a variety of form factors.
@@ -90,31 +95,90 @@ se-built for the DSA2000 project, while also leveraging the significant design a
 
 RCF has chosen the iW-RainboW-G35M SoM from iWave Systems Technologies[^iwave] (Figure \ref{figLiwave-zu11}), populated with a Xilinx/AMD Zynq Ultrascale+ ZU11-EG System-on-Chip, which is, itself, a CPU and FPGA integrated into a single chip package.
 
+<!--
 ![\label{fig:iwave-zu11}The iW-RainboW-G35M system on module from iWave Systems Technologies incorporates a Xilinx/AMD Zynq Ultrascale+ System-on-Chip with power and RAM support infrastructure on a small module designed to be mounted to a larger circuit board. *Image credit: iWave System Technologies*](images/iwave-zu11.png){width=40%}
+![](images/iwave-zu11.png){width=40%} ![](images/iwave-zu11-rear.png){width=40%}
+-->
+![](images/iwave-zu11.png){width=40%}  ![](images/iwave-zu11-rear.png){width=40%}
+\begin{figure}[h]
+\label{fig:iwave-zu11}
+\caption{The iW-RainboW-G35M system on module from iWave Systems Technologies incorporates a Xilinx/AMD Zynq Ultrascale+ System-on-Chip with power and RAM support infrastructure on a small module designed to be mounted to a larger circuit board. *Image credit: iWave System Technologies*}
+\end{figure}
 
 The ZU11-EG is a mid-range FPGA, with 0.65 million logic cells, 2928 hardware DSP slices, and 43.6 Mb of dedicated on-chip RAM.
 
 #### FPGA Station Module Carrier Board
 
-With the FPGA SoM and ADC chip selected for RCF, a custom board is required to host these components and provide physical interfaces to the other DSA2000 subsystems.
+With the FPGA SoM and ADC chip selected for RCF, a custom "carrier board" is required to host these components and provide physical interfaces to the other DSA2000 subsystems.
 
-A block diagram of the FSM "carrier board" is shown in Figure \ref{fig:rcf-fsm}.
+A block diagram of the FSM carrier is shown in Figure \ref{fig:rcf-fsm}.
 The board has the following features:
 
 1. Standard 3U Eurocard height (100 mm) and length (220 mm) to facilitate mounting multiple cards vertcally in a standard 19" subrack.
 2. A backplane connector to allow power, timing reference signals (see [@ts-design]), and control and monitoring signals -- including a 1 Gb Ethernet connection -- to be delivered to the FSM over a backplane with no cables.
-3. 
+3. Push-on SMC coaxial connectors to allow RF signals to be delivered from an analog receiver board to the FSM ADC without the need for cables.
+4. Push on power and low-speed data (I2C) connectors to allow the FSM to supply power and a control and monioring interface to a connected analog reciever board.
+5. Basic peripherals for use during development, including an SD card form which the SoM CPU may be booted, and a USB serial interface for debugging.
+6. Two QSFP28 connectors, providing up to 200 Gb/s of digital IO to the SNW network. These ports may be configured as either 25 GbE or 100 GbE links.
+7. An RJ45 1 Gb Ethernet connector, providing a simple control and monitoring interface to the FSM which does not require the use of the backplane. This is intended to be used during development.
 
-![\label{fig:rcf-fsm}](images/rcf-fsm.drawio.pdf)
+Since the FSM carrier board is relatively simple, it can be designed and tested in a short timeframe at a relatively low cost.
+Design of the carrier will likely be contracted to the SoM vendor, iWave Systems Technologies, who already have experience in designing carrier boards similar to that which RCF requires.
+
+![\label{fig:rcf-fsm}The FSM board, which hosts an AD9207 ADC chip and iWave ZU11-based System-on-Module, connected with an 8-lane JESD204C interface. The board features a backplane connector, through which power, timing references, and contrl signals may be delivered. The board interfaces with an analog receiver (part of the ASP subsystem) via push on connectors, to avoid the use of coaxial cables](images/rcf-fsm.drawio.pdf)
+
+### FSM 19" Subrack
+
+It is desirable for FSMs - of which there are more than 2000 - to be mounted in a standard 19" equipment rack, in a manner that makes it as easy as possible to replace a faulty module.
+
+FSMs are designed to be comptible with 19" subracks supporting the Eurocard standard.
+Such subracks are readily available from a variety of vendors, and are readily configurable to accomodate cards of different lengths and widths, with backplanes either conforming to an industry standard, or custom-designed to suit the needs of the system.
+An example of a 3U Eurocard subrack is shown in Figure \ref{fig:eurocard-rack}.
+
+![\label{fig:eurocard-rack} A basic 3U eurocard chassis, with card guides installed to accommodate ten 1.6 inch (8HP) cards. *Image Credit: Leeman Geophysical LLC*](images/eurocard-rack-photo.png){width=50%}
+
+Multiple FSMs are slotted vertically into a subrack, whose backplane provides power, timing signals, and control interfaces to the modules.
+An analog receiver board can then be slotted in front of the FSM in the same card guide slots passing analog signals to the FSM via push-on connetors.
+
+Analog inputs are provided to each board assembly via optical RF connections on the front of the analog receiver board.
+Digital data exits the board assembly via QSFP28 connectors on the rear of the FSM.
+To enable these connectors to be accessible, the rear of the subrack uses a backplane which only occupies the lower half of the subrack height.
+On the rear of the backplane, a pair of coaxial connectors provide timing signals from the upstream TS system, and high amperage connectors supply 12V power from external power supply units.
+
+Each FSM is fitted with a finned heat-sink, and air is blown through the subrack from bottom to top using external fan trays (See Section \ref{sec:RackLayout}).
+With heat-sinks fitted, the FSMs are 1.6 inches (8HP) wide, and thus 10 FSMs may be mounted in a standard 84 HP subrack.
+
+### Subrack Management Card
+
+Since the RCF system contains more than 2000 FSMs, densely packed in a relatively small number of racks, it is desirable to avoid the need for each FSM to have a cabled 1 GbE control and monitoring connection.
+To this end, a "Subrack Management Card" (SRM, Figure \ref{fig:srm}) is included in each subrack, which uses a 1 GbE switch chip to allow all FSMs in a subrack to be reached via a single RJ45 Ethernet connection, via the subrack backplane.
+The SRM is not a critical part of the RCF design - all FSM boards have an RJ45 connector to allow each to be individually connected to the control network - but makes use of the fact that 4HP of spare space is available in each 10-FSM subrack.
+
+![\label{fig:srm} A "Subrack Management Card", which implements 1Gb Ethernet switching functionality to allow all RCF boards in a rack to be reached via a single RJ45 Ethernet connection.](images/srm.drawio.pdf){width=70%}
+
+The SRM also features a small CPU subsystem based on a single System-in-Package (SiP) chip, which facilitates connecting to the debug interfaces of the FSMs in the subrack.
+This feature - somewhat similar to the "out-of-band" management often supported by rack-mounted CPU servers - is designed to allow remote, low-level diagnostics in the event of any software issues which may render the FSMs unresponsive to their usual Ethernet control interface.
+
+### Rack Layout \label{sec:RackLayout}
+
+The RCF design is based around an architecture which hosts 80 FSM boards in a standard height (42U) 19" equipment rack.
+Each rack services 80 dishes in the DSA2000 array, and 26 such racks are required for the full system.
+Since the number of dishes in the array is not a muliple of 80, one rack in the system will only be partially populated with 48 FSMs, leaving at least 11U of extra empty space in this rack.
+
+![One of 26 racks in the RCF system servicing 80 DSA antennas. The rack comprises 8 3U subracks, each holding 10 FSM assemblies and an SRM board. Pairs of subracks are cooled bottom-to-top using 1U fan trays, with off-the-shelf air deflector trays redirecting airflow so that the rack-level cooling is from front to back. Disrete 1U multi-module power supplies are used to obtain N+1 redundancy and hot-swappability of power supply modules.](images/rack_layout.drawio.pdf)
+
+#### Beamformer Rack
+
+![Beamformer hardwre arch](images/beamformer-arch.drawio.pdf)
+
+![Beamformer rack](images/pulsar-timing-rack.drawio.pdf)
+
 
 
 
 ## Firmware \label{sec:Firmware}
 
 
-[^ad9207]: See [https://www.analog.com/en/products/ad9207.html](https://www.
-analog.com/en/products/ad9207.html)
-[^iwave]: See [https://www.iwavesystems.com/product/zu19-zu17-zu11-zynq-ultrascale-mpsocsom/](https://www.iwavesystems.com/product/zu19-zu17-zu11-zynq-ultrascale-mpsocsom/)
 
 ### Frequency Channels
 
@@ -139,11 +203,6 @@ analog.com/en/products/ad9207.html)
 ![\label{fig:stage2tc-response-scale}A possible PFB response of the second stage filters for TC channelization products with the filter passbands set to 85% of their usual width.](images/second_stage_pfb_tc_response_0.85xscale.pdf)
 
 
-### Rack Layout
-
-![](images/rack_layout.drawio.pdf)
-
-![](images/pulsar-timing-rack.drawio.pdf)
 
 ### Processing Pipeline
 

@@ -184,4 +184,4 @@ The following table summarises the derived RCF requirements:
 | *RcfR-0007* | RCF shall have sufficient time delay buffers to compensate for up to 50 usec delay in the time-domain for all data products. |
 | *RcfR-0008* | Where RCF is required to generate beams from multiple antenna elements, it must be capable of compensating for delays up to 125 usec. |
 | *RcfR-0009* | RCF shall ensure that, after applying a delay correction to a data stream to phase it to a particular sky position, the residual error across any frequency channel shall be $<1^\circ$. |
-| *RcfR-00010* | RCF shall be capable of updating the delay applied to each antenna signal at least 2628 times per second. |
+| *RcfR-0010* | RCF shall be capable of updating the delay applied to each antenna signal at least 2628 times per second. |

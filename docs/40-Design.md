@@ -170,7 +170,7 @@ It is anticipated that this space will be utilized by the TS subsystem [@ts-desi
 A fully-populated RCF rack servicing 80 dishes is shown in Figure \ref{fig:rcf-rack}.
 
 
-![\label{fig:rcf-rack}One of 26 racks in the RCF system servicing 80 DSA antennas. The rack comprises 8 3U subracks, each holding 10 FSM assemblies and an SRM board. Pairs of subracks are cooled bottom-to-top using 1U fan trays, with off-the-shelf air deflector trays redirecting airflow so that the rack-level cooling is from front to back. Disrete 1U multi-module power supplies are used to obtain N+1 redundancy and hot-swappability of power supply modules.](images/rack_layout.drawio.pdf)
+![\label{fig:rcf-rack}One of 26 racks in the RCF system servicing 80 DSA antennas. The rack comprises 8 3U subracks, each holding 10 FSM assemblies and an SRM board. Pairs of subracks are cooled bottom-to-top using 1U fan trays, with off-the-shelf air deflector trays redirecting airflow so that the rack-level cooling is from front to back. Discrete 1U multi-module power supplies are used to obtain N+1 redundancy and hot-swappability of power supply modules.](images/rack_layout.drawio.pdf)
 
 RCF racks are designed to be used in a data center which privides front-to-back cooling.
 Since the FSM subracks are cooled top-to-bottom, air deflectors and 1U fan trays are used to channel cold air from the front of the rack and upwards through the subracks, with hot air exhausted from the rear of the rack.
@@ -197,7 +197,7 @@ The breakdown of power consumption in a fully-populated RCF rack is:
 | **RACK TOTAL** |  |  | **7700**| |
 
 
-#### Beamformer Rack
+#### Beamformer Rack \label{sec:BeamformerRack}
 
 There is one further rack in the RCF system, which is configured differently to the others.
 
@@ -238,9 +238,81 @@ Assuming a power budget of 40W per FSM, and 1500W for each PT server, the breakd
 
 ## Firmware \label{sec:Firmware}
 
+In this section the digitization and processing methods used by the RCF firmware are described.
 
+### Digitization
 
-### Frequency Channels
+Since the DSA's science band of interest is 700 - 2000 MHz, the simplest digitization configuration is to direct-sample these signals at at least twice the highest RF frequency - i.e., sample at at least 4000 Msps.
+The RCF design assumes that the samping rate will be 4800 Msps, which results in analog anti-aliasing filter requirements which should be easy to meet.
+
+Rather than pass the entire digitized band from the ADC chip to FPGA, the RCF leverages the mixing, filtering, and decimation capabilities of the ADC to reduce the bandwidth of the digitized data as early as possible in the processing pipeline.
+ADC signal processing configuration is shown in Figure \ref{fig:adc-config}.
+
+![\label{fig:adc-config}The configuration of RCF's AD9207 data path. RF signals are sampled at 4800 Msps, before being mixed, filtered, and decimated to deliver a 1600 MHz Nyquist band centred at 1350 MHz.](images/rcf-adc-pipeline.drawio.pdf){width=70%}
+
+Analog samples are initially digitized at 4800 Msps with 12 bits of resolution, and then mixed with a digitally generated oscillator, filtered, and decimated to produce a quadrature-sampled 1600 MHz Nyquist baseband centered at 0 Hz.
+The AD9207's decimation filters have a usable passband -- defined as the region with better than 100 dB image rejection and less than $\pm 0.001$ dB of passband ripple -- of 81.4\% [@ad9207].
+For a sampling rate of 1600 Msps, this corresponds to a passband of 1302.1 MHz, which is sufficient to cover the 700 - 2000 MHz band of interest.
+This data is passed from ADC to FPGA as an 8-lane JESD204C interface running at 13.2 Gbps per lane.
+
+### Signal Processing
+
+Once ADC sample streams for a polarization pair are received by a JESD204C receiver in the FPGA, they enter a signal processing pipeline which implements the following functions:
+
+1. Time stamping, where the time reference signals available to each FPGA are used to associate a precise timestamp with each ADC sample. This timestamp is used to label data which are transmitted to downstream processors, and is also used internally to ensure proper timekeeping in the delay and phase tracking system.
+2. Coarse delay correction up to 81920 ADC sampled (up to 51.2 usec at a sample rate of 1600 Msps).
+3. First-stage Polyphase Filter Bank (PFB) generating 256 channels, each 8.33 MHz wide and overlapping by a factor of $\frac{4}{3}$.
+4. Fine-Delay correction and phase-rotation, to allow the phase and delay of each signal path to be tracked as the sky rotates, and to allow small frequency shifts to be applied to each 8.33 MHz channel to allow potential compensation for any source doppler shift.
+5. Four parallel second-stage filterbank pathways, generating channels at NC, AC, BC, and TC resolutions, and removing the $\frac{4}{3}$ overlap between channels.
+6. Requantization of output data to 4+4 bit complex resolution.
+7. Packetization of data into a stream of UDP packets output to the SNW system over a pair of 25 GbE connections.
+8. Beamforming of TC data from 80 dishes, received via a 25GbE connection, to form 4 beams at 8+8 bit complex resolution. This data is transmitted back over 25 GbE to be summed by separate FPGAs in the beamformer rack (see Section \ref{sec:BeamformerRack})[^bf-fpgas].
+
+[^bf-fpgas]: The firmware running on the FPGAs in the beamformer rack simply receives data from multiple FPGAs, sums it without any further processing, and transmits (via SNW) to the PT system. The firmware running on these FPGAs is not discussed further here.
+
+This signal processing pipeline is shown in block diagram form in Figure \ref{fig:firmware}.
+Each processing block is described in more detail below.
+
+![\label{fig:firmware}The FPGA signal processing pipeline, for each dual-polarization pair of dish signals.](images/rcf-firmware.drawio.rot270.pdf)
+
+#### Time Stamping
+
+Network Time Protocol ensures that the CPU subsystem on each FPGA board agrees the time to a precision better than 1 ms. However, this is not sufficient for precisely assigning a time to each ADC sample such that data processed by multiple FPGAs can be coherently combined.
+For this reason, the TS system provides a 375 Hz signal to each FPGA whose time of arrival is precisely controlled such that the ADC sample associated with an edge of the 375 Hz reference can be reliably identified.
+Since edges of the 375 Hz reference occur at a larger separation than NTP precision, successive edges can be disambiguated using local system time, and all FPGAs can agree to associate a common time to the ADC sample associated with any given edge.
+
+These timestamps are carried with ADC samples through the processin pipeline, so that processing blocks which need to know the time associated with a sample (eg, the fine delay correction and phase rotation block) can do so.
+
+#### Coarse Delay Correction
+
+On-chip *UltraRAM* blocks are used to implement a coarse delay buffer for each of the two signal paths. These buffers are 640 kiB deep, and allow compensation for delays of up to 81920 samples (51.2 usec at a sample rate of 1600 Msps), satisfying requirement RcfR-0007.
+
+#### First-Stage PFB
+
+The first stage filterbank generates 256 channels, each 8.33 MHz wide and overlapping by a factor of $\frac{4}{3}$.
+The filterband is 32-taps long, and uses a Hann window to generate channels with the response shown in Figure \ref{fig:stage1-response}.
+
+![\label{fig:stage1-response}The PFB response of the 32-tap, Hann-windowed first stage filter, which is oversampled by a factor of 4/3. The frequency axis is normalized such that bins centers are separated by 1. Solid black verical lines indicate location of bin enters. Shaded regions, bounded by dashed black verical lines indicate the non-overlapping bin widths, which are 6.25 MHz wide. Dotted red vertical lines indicate the Nyquist boundaries of the overlapping bins, each of which is 8.33 MHz wide.](images/first_stage_pfb_response.pdf)
+
+#### Fine Delay Correction and Phase Rotation
+
+Fine delay correction and phase rotation are implemented as a multplication of each 8.33 MHz channel with a unit-magnitude complex exponential.
+
+The phase of this exponential varies over time, and compensates for the changing path lengths from source to antenna, as well as the related effects of the upstream digital LO.
+
+A tiered approach to time-keeping is used to ensure that phasors values may be updated sufficiently quickly without the need for high data-rate communication between the RCF and MNC subsystems.
+
+1. Messages from MNC to RCF are sent at a rate of ~1 Hz, and contain a delay polynomial which specifies the delay to be applied to a given antenna at a given time.
+2. Every ~100ms, a CPU-based delay control module calculates the delay, phase, and per-spectrum delay-increment and phase-increment which should be applied to a pipeline's signals. This delay, phase, delay-rate, and phase-rate are written to FPGA registers, and a new coarse delay is set. A timed trigger is used so that all new parameters are applied to data simultaneously.
+3. Every ~1 usec, the phasors to be applied to each 8.33 MHz channel are updated by the FPGA.
+
+With this architecture, delays are updated at ~MHz rate, comfortably satisfying RcfR-0010.
+Delay-correcting 8.33 MHz channels also satisfies RcfR-0009 -- that the phase error after delay application across a channel be $<1\circ$ -- since, at 1600 Msps -- the sub-sample component of delay is 0.625 ns, which represents a maximum phase deviation from the center of an 8.33 MHz channel of $\pm 0.9^\circ$.
+
+#### Second-Stage PFB
+
+Second stage filters are constructed to generate the appropriate NC, AC, BC, and TC channelization products.
+The resolutions are shown below, and satisfy, respectively, RcfR-0001, RcfR-0002, RcfR-0003, and RcfR-0004.
 
 | Data Product | Required bandwidth (MHz) | Channel Bandwidth (kHz) | Number of channels | Total bandwidth (MHz) |
 |------------------------------------------|-------------------------|-------------------------|--------------------|-----------------------|
@@ -251,38 +323,52 @@ Assuming a power budget of 40W per FSM, and 1500W for each PT server, the breakd
 | TOTAL (excluding TC) | 1334.95 | -   | 15152 | 1337.2  |
 | TOTAL         | 2634.95                 | -                       | 15776              | 2637.2                |
 
-
-### Frequency Channel Response
-
-![\label{fig:stage1-response}The PFB response of the first stage filter, which is oversampled by a factor of 4/3](images/first_stage_pfb_response.pdf)
+Second-stage PFBs for the NC, AC, and BC channels are all 8-tap, Hann-filtered, and have a response shown in Figure \ref{fig:stage2-response}.
 
 ![\label{fig:stage2-response}The PFB response of the second stage filters for NC, AC, and BC channelization products.](images/second_stage_pfb_response.pdf)
 
+The length of these filters is limited to 8-taps in order to fit in available FPGA RAM resources.
+The second stage TC filter is upchnnelises by only a factor of 4, and thus can be made longer while still fitting in a reasonable RAM footprint.
+The TC filter has 24 taps, and a response shown in Figure \ref{fig:stage2tc-response}.
+
 ![\label{fig:stage2tc-response}The PFB response of the second stage filters for TC channelization products.](images/second_stage_pfb_tc_response_1xscale.pdf)
+
+If necessary, it is easy to modify the shape of the TC filters to give better channel isolation at the expense of passband width, as shown in Figure \ref{fig:stage2tc-response-scale}.
+This is a strategy which has been adopted by other pulsar timing experiements (see, for example, [@Bailes2020]).
 
 ![\label{fig:stage2tc-response-scale}A possible PFB response of the second stage filters for TC channelization products with the filter passbands set to 85% of their usual width.](images/second_stage_pfb_tc_response_0.85xscale.pdf)
 
+#### Requantization
 
+Requantization to complex sample with 4 bits of precision per real and imaginary component is used to reduce the data output rate of each FPGA.
+Values are scaled using a frequency-dependent, runtime-programmable scaling factor, and then rounded, with saturation to value in the interval $[-7, 7]$.
+Though a 4-bit two's complement representation is able to use the value -8, this value is prohibited in order to maintain a symmetric quantization scheme.
+Instead, the 4 bit code "0b1000" is used to indicate that a value is flagged.
+Flagging logic is still under design.
 
-### Processing Pipeline
+#### Packetization
 
-![\label{fig:firmware}](images/rcf-firmware.drawio.rot270.pdf)
+Data are reordered and packetized into a stream of UDP packets. NC, AC, or BC data are transmitted over 25 GbE to destinations in the RCP system.
+TC data are transmitted over 25 GbE to FPGAs within the same rack, such that each of 78 FPGAs in a rack receive 8 frequency channels of TC data from all dishes serviced by the rack.
 
-![\label{fig:adc-config}](images/rcf-adc-pipeline.drawio.pdf)
+Since data entering the packetization system has been quantized to 4+4-bit, it has substantially lower data rate than earlier in the system.
+This allows reordering to be carried out in high-capacity off-chip DDR4 memory, meaning that large data transpose operations are possible.
+This allows large packets (e.g. of 256 time samples and 16 frequency channels) to be generated and transmitted to RCP, reducing transmission and processing overheads.
 
-Figure \ref{fig:firmware}
+In the case of TC packets, reordering in DDR4 memory means that there is a large amount of buffer space available to compensate for instrumental delays present in the analog system (RcfR-0008).
 
-# Dependencies \label{sec:dependencies}
+#### Beamforming
 
-Dependencies of RCF on other DSA2000 subsystems are as follows:
+The beamformer subsystem receives 8 TC channels of data for 80 dual-polarization signals, and uses these to form 4 sub-array beams.
 
-1. Analog Signal Path (ASP): ASP must deliver 4096 RF signals to RCF, with a bandwidth of 700 - 2000 MHz, and a maximum power of -30 dBm.
-2. Timing and Synchronization (TS): TS must deliver timing signals to RCF, with a jitter of <1 ns.
-3. Central Control Network (CNW): CNW must deliver control messages to RCF, with a latency of <1 ms.
-4. Monitor and Control (MNC): MNC must deliver control messages to RCF, with a latency of <1 ms.
-5. Facilities (FAC): FAC must provide power and cooling to RCF, with a power budget of 10 kW and a cooling capacity of 34 kW.
-6. Signal Data Network (SNW): SNW must deliver data from RCF to RCP and PT, with a bandwidth of 25/100/400 Gb/s.
-7. Radio Camera Processor (RCP): RCP must receive data from RCF, with a bandwidth of 25/100/400 Gb/s.
-8. Pulsar Timing (PT): PT must receive data from RCF, with a bandwidth of 25/100/400 Gb/s.
+It would be easiest to simply multiply TC channels by an appropriate phase factor and sum them to form each beam.
+Unfortunately, this results in an unacceptable level of frequency smearing, given the broad bandwidth of the TC channels and wide field of view of the DSA dishes (see Section \ref{sec:freq-res}).
+Instead, the beamformer implements a 32-point fast-convolution filter on each TC channel, effectivey upchannelizing to 65 kHz, phase rotating, and then re-synthesizing 2.1 MHz channels.
 
+Beam pointing delays are received from the MNC subsystem and applied to data in a similar fashion to the fine delay correction and phase rotation module.
+However, since the data input to the beamformer have already been phased to the direction the array is pointing, required delay and phase update rates are relatively low.
 
+Since the beamforming processing combines signals from 80 dishes, output data precision of 8+8 bit is maintained, to allow for an increase in signal-to-noise.
+
+This 8+8 bit data, which totals 2.13 Gb/s from each FPGA in a rack and represents 4 dual-polarization beams, is transmitted over 25 GbE to the beamformer rack, where it is summed with data from other racks to form a full array beam at 16+16-bit precision (see Figure \ref{fig:beamformer-arch}). 
+### Resource Utilization

@@ -119,7 +119,7 @@ The board has the following features:
 Since the FSM carrier board is relatively simple, it can be designed and tested in a short timeframe at a relatively low cost.
 Design of the carrier will likely be contracted to the SoM vendor, iWave Systems Technologies, who already have experience in designing carrier boards similar to that which RCF requires.
 
-![\label{fig:rcf-fsm}The FSM board, which hosts an AD9207 ADC chip and iWave ZU11-based System-on-Module, connected with an 8-lane JESD204C interface. The board features a backplane connector, through which power, timing references, and contrl signals may be delivered. The board interfaces with an analog fiber receiver (FRX, part of the ASP subsystem) via blind-mate connectors, avoiding the use of coaxial cables](images/rcf-fsm.drawio.pdf)
+![\label{fig:rcf-fsm}The FSM board, which hosts an AD9207 ADC chip and iWave ZU11-based System-on-Module, connected with an 8-lane JESD204C interface. Power connections are shown in red. The board features a backplane connector, through which power, timing references, and control signals may be delivered. The board interfaces with an analog fiber receiver (FRX, part of the ASP subsystem) via blind-mate connectors, avoiding the use of coaxial cables](images/rcf-fsm.drawio.pdf)
 
 ### FSM 19" Subrack
 

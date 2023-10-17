@@ -17,10 +17,10 @@ Dependencies of RCF on other DSA2000 subsystems are as follows:
 
 1. CNW is assumed to provide a 1 GbE network switch with at least 24 RJ45 ports in each of the 27 RCF 19" equipment racks.
 
-## Monitor and Control (MNC)
+## Monitor and Control (MC)
 
-1. It is assumed that MNC will deliver delay polynomials to RCF at a period of ~1 Hz.
-2. It is assumed that MNC protocols will be carried over the 1 GbE network provided by CNW.
+1. It is assumed that MC will deliver delay polynomials to RCF at a period of ~1 Hz.
+2. It is assumed that MC protocols will be carried over the 1 GbE network provided by CNW.
 
 ## Facilities (FAC)
 

@@ -9,13 +9,13 @@ The top-level RCF interfaces to other DSA2000 subsystems are shown in Figure \re
 1. Analog Signal Path (ASP): 4096 RF signals (two polarizations from each of 2048 dishes) are delivered by ASP, which must be digitized and processed by RCF.
 1. Timing and Synchronization (TS): RCF receives timing signals from TS, and uses them to ensure coherent digitization and accurate timestamping of data streams.
 1. Central Control Network (CNW): A 1 Gb Ethernet network responsible for delivering control messages to RCF.
-1. Monitor and Control (MNC): RCF receives and acts on commands from MNC, and must be able to report its health status to MNC. These commands are delivered via CNW.
+1. Monitor and Control (MC): RCF receives and acts on commands from MC, and must be able to report its health status to MC. These commands are delivered via CNW.
 1. Facilities (FAC): FAC provide the space, power, and cooling infrastructure to support RCF.
 1. Signal Data Network (SNW): SNW is a 25/100/400 Gb/s Ethernet network responsible for transporting high-speed digital data products from RCF to RCP and PT. In addition, SNW provides data transmission paths between different RCF processors.
 1. Radio Camera Processor (RCP): RCP receives channelized voltages from RCF, via the SNW network, and uses them to produce images and transient event data products.
 1. Pulsar Timing (PT): PT receives channelized tied-array beam voltages from RCF, via the SNW network, and uses them to produce pulsar timing data products.
 
-![\label{fig:rcf-interfaces}Top-level interfaces to the RCF subsystem. Interfaces which are logical only (MNC, whose control messages are delivered via CNW, and RCP, whose data are delivered via SNW) are indicated with dotted arrows.](images/rcf-interfaces.drawio.pdf)
+![\label{fig:rcf-interfaces}Top-level interfaces to the RCF subsystem. Interfaces which are logical only (MC, whose control messages are delivered via CNW, and RCP, whose data are delivered via SNW) are indicated with dotted arrows.](images/rcf-interfaces.drawio.pdf)
 
 The basic specifications for these interfaces are described in Section \ref{sec:dependencies}.
 
@@ -293,9 +293,9 @@ Fine delay correction and phase rotation are implemented as a multplication of e
 
 The phase of this exponential varies over time, and compensates for the changing path lengths from source to antenna, as well as the related effects of the upstream digital LO.
 
-A tiered approach to time-keeping is used to ensure that phasors values may be updated sufficiently quickly without the need for high data-rate communication between the RCF and MNC subsystems.
+A tiered approach to time-keeping is used to ensure that phasors values may be updated sufficiently quickly without the need for high data-rate communication between the RCF and MC subsystems.
 
-1. Messages from MNC to RCF are sent at a rate of ~1 Hz, and contain a delay polynomial which specifies the delay to be applied to a given antenna at a given time.
+1. Messages from MC to RCF are sent at a rate of ~1 Hz, and contain a delay polynomial which specifies the delay to be applied to a given antenna at a given time.
 2. Every ~100ms, a CPU-based delay control module calculates the delay, phase, and per-spectrum delay-increment and phase-increment which should be applied to a pipeline's signals. This delay, phase, delay-rate, and phase-rate are written to FPGA registers, and a new coarse delay is set. A timed trigger is used so that all new parameters are applied to data simultaneously.
 3. Every ~1 \textmu s, the phasors to be applied to each 8.33 MHz channel are updated by the FPGA.
 
@@ -358,7 +358,7 @@ It would be easiest to simply multiply TC channels by an appropriate phase facto
 Unfortunately, this results in an unacceptable level of frequency smearing, given the broad bandwidth of the TC channels and wide field of view of the DSA dishes (see Section \ref{sec:freq-res}).
 Instead, the beamformer implements a 32-point fast-convolution filter on each TC channel, effectivey upchannelizing to 65 kHz, phase rotating, and then re-synthesizing 2.1 MHz channels.
 
-Beam pointing delays are received from the MNC subsystem and applied to data in a similar fashion to the fine delay correction and phase rotation module.
+Beam pointing delays are received from the MC subsystem and applied to data in a similar fashion to the fine delay correction and phase rotation module.
 However, since the data input to the beamformer have already been phased to the direction the array is pointing, required delay and phase update rates are relatively low.
 
 Since the beamforming processing combines signals from 80 dishes, output data precision of 8+8 bit is maintained, to allow for an increase in signal-to-noise.

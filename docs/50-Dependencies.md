@@ -6,7 +6,7 @@ Dependencies of RCF on other DSA2000 subsystems are as follows:
 ## Analog Signal Path (ASP)
 
 1. ASP must deliver 4096 RF signals to RCF, with a bandwidth of 700 - 2000 MHz, compatible with a Nyquist bandwidth of 4800 Msps.
-2. It is assumed that ASP will package optical receiver boards so that they are compatible with blind-mate connection to the FSM single-height Eurocard boards.
+2. It is assumed that ASP will package fiber receiver boards so that they are compatible with blind-mate connection to the FSM single-height Eurocard boards.
 
 ## Timing and Synchronization (TS)
 

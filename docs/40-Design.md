@@ -119,7 +119,7 @@ The board has the following features:
 Since the FSM carrier board is relatively simple, it can be designed and tested in a short timeframe at a relatively low cost.
 Design of the carrier will likely be contracted to the SoM vendor, iWave Systems Technologies, who already have experience in designing carrier boards similar to that which RCF requires.
 
-![\label{fig:rcf-fsm}The FSM board, which hosts an AD9207 ADC chip and iWave ZU11-based System-on-Module, connected with an 8-lane JESD204C interface. The board features a backplane connector, through which power, timing references, and contrl signals may be delivered. The board interfaces with an analog receiver (part of the ASP subsystem) via push on connectors, avoiding the use of coaxial cables](images/rcf-fsm.drawio.pdf)
+![\label{fig:rcf-fsm}The FSM board, which hosts an AD9207 ADC chip and iWave ZU11-based System-on-Module, connected with an 8-lane JESD204C interface. The board features a backplane connector, through which power, timing references, and contrl signals may be delivered. The board interfaces with an analog receiver (part of the ASP subsystem) via blind-mate connectors, avoiding the use of coaxial cables](images/rcf-fsm.drawio.pdf)
 
 ### FSM 19" Subrack
 
@@ -132,7 +132,7 @@ An example of a 3U Eurocard subrack is shown in Figure \ref{fig:eurocard-rack}.
 ![\label{fig:eurocard-rack} A basic 3U eurocard chassis, with card guides installed to accommodate ten 1.6 inch (8HP) cards. *Image Credit: Leeman Geophysical LLC*](images/eurocard-rack-photo.png){width=50%}
 
 Multiple FSMs are slotted vertically into a subrack, whose backplane provides power, timing signals, and control interfaces to the modules.
-An analog receiver board can then be slotted in front of the FSM in the same card guide slots passing analog signals to the FSM via push-on connetors.
+An analog receiver board can then be slotted in front of the FSM in the same card guide slots passing analog signals to the FSM via blind-mate connetors.
 
 Analog inputs are provided to each board assembly via optical RF connections on the front of the analog receiver board.
 Digital data exits the board assembly via QSFP28 connectors on the rear of the FSM.

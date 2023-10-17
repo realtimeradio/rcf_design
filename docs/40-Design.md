@@ -165,7 +165,7 @@ A fully-populated RCF rack servicing 80 dishes is shown in Figure \ref{fig:rcf-r
 ![\label{fig:rcf-rack}One of 26 racks in the RCF system servicing 80 DSA antennas. The rack comprises 8 3U subracks, each holding 10 FSM assemblies and an SRM board. Pairs of subracks are cooled bottom-to-top using 1U fan trays, with off-the-shelf air deflector trays redirecting airflow so that the rack-level cooling is from front to back. Discrete 1U multi-module power supplies are used to obtain N+1 redundancy and hot-swappability of power supply modules.](images/rack_layout.drawio.pdf)
 
 RCF racks are designed to be used in a data center which privides front-to-back cooling.
-Since the FSM subracks are cooled top-to-bottom, air deflectors and 1U fan trays are used to channel cold air from the front of the rack and upwards through the subracks, with hot air exhausted from the rear of the rack.
+Since the FSM subracks are cooled bottom-to-top, air deflectors and 1U fan trays are used to channel cold air from the front of the rack and upwards through the subracks, with hot air exhausted from the rear of the rack.
 These deflectors and fan trays are off-the-shelf components, with the latter providing healt monitoring capablities.
 
 12V DC power is provided to all subracks from a pair of 1U power supply units, which themselves contain multiple hot-swappable power supply modules configured to provide N+1 redundancy.

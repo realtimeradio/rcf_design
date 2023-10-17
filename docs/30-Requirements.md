@@ -77,17 +77,17 @@ There is currently only one science requirement from which a channel response re
 ## Doppler Tracking
 
 The velocity of the Earth, relative to observed radio sources, changes over the course of time, primarily because of the planet's rotational and orbital motion.
-Therefore, a time-varying doppler adjustment is required to convert the observed frequency of a source into a source velocity relative to a Local Standard of Rest (LSR) frame.
+Therefore, a time-varying Doppler adjustment is required to convert the observed frequency of a source into a source velocity relative to a Local Standard of Rest (LSR) frame.
 
 Science requirement ScR-0032 states:
 
 - ScR-0032: [The DSA2000 system shall be capable of] correction for all motion relative to LSR with accuracy $< 0.01$ km/s.
 
 Such adjustment may be carried out after correlation or image-making, by interpolating the frequency channels of a given data set onto a standard velocity frame.
-Alternatively, the center frequency of each frequency channel may be adjusted in real time to track the doppler shift of a source.
+Alternatively, the center frequency of each frequency channel may be adjusted in real time to track the Doppler shift of a source.
 Whatever the mechanism, adjustment must be applied before summing together data from time periods over which the center frequency of a frequency channel moves significantly.
 
-For DSA-2000, it is useful to be able to track the doppler shift in real time over the coarse of a mosaic observation, which may last for $10 - 100$ hours.
+For DSA-2000, it is useful to be able to track the Doppler shift in real time over the coarse of a mosaic observation, which may last for $10 - 100$ hours.
 This means that the RCP system does not need to add Doppler shift processing to its pipeline prior to writing data to the archiving system.
 
 The following requirement aims to explicitly ensure this is enabled by the RCF design:
@@ -97,7 +97,7 @@ The following requirement aims to explicitly ensure this is enabled by the RCF d
 <!--
 \subsubsection{Doppler Tracking}
 
-The maximum doppler correction due to the orbit of the Earth is approximately 30 km/s, which is a shift of 200 kHz at 2 GHz. This velocity also represents a differential shift of 0.1 kHz over 1 MHz of bandwidth.
+The maximum Doppler correction due to the orbit of the Earth is approximately 30 km/s, which is a shift of 200 kHz at 2 GHz. This velocity also represents a differential shift of 0.1 kHz over 1 MHz of bandwidth.
 
 Assuming that the DSA RCF implements a two-stage filterbank, the consequence of the shift at 2 GHz is that the edge 200 kHz (at the high-frequency end of the band) of each first-stage frequency channel is unusable.
 

@@ -255,7 +255,7 @@ Once ADC sample streams for a polarization pair are received by a JESD204C recei
 1. Time stamping, where the time reference signals available to each FPGA are used to associate a precise timestamp with each ADC sample. This timestamp is used to label data which are transmitted to downstream processors, and is also used internally to ensure proper timekeeping in the delay and phase tracking system.
 2. Coarse delay correction up to 81920 ADC sampled (up to 51.2 \textmu s at a sample rate of 1600 Msps).
 3. First-stage Polyphase Filter Bank (PFB) generating 256 channels, each 8.33 MHz wide and overlapping by a factor of $\frac{4}{3}$.
-4. Fine-Delay correction and phase-rotation, to allow the phase and delay of each signal path to be tracked as the sky rotates, and to allow small frequency shifts to be applied to each 8.33 MHz channel to allow potential compensation for any source doppler shift.
+4. Fine-Delay correction and phase-rotation, to allow the phase and delay of each signal path to be tracked as the sky rotates, and to allow small frequency shifts to be applied to each 8.33 MHz channel to allow potential compensation for any source Doppler shift.
 5. Four parallel second-stage filterbank pathways, generating channels at NC, AC, BC, and TC resolutions, and removing the $\frac{4}{3}$ overlap between channels.
 6. Requantization of output data to 4+4 bit complex resolution.
 7. Packetization of data into a stream of UDP packets output to the SNW system over a pair of 25 GbE connections.

@@ -77,21 +77,22 @@ There is currently only one science requirement from which a channel response re
 ## Doppler Tracking
 
 The velocity of the Earth, relative to observed radio sources, changes over the course of time, primarily because of the planet's rotational and orbital motion.
-Therefore, a time-varying doppler correction is required to convert the observed frequency of a source into a source velocity relative to a Local Standard of Rest (LSR) frame.
+Therefore, a time-varying doppler adjustment is required to convert the observed frequency of a source into a source velocity relative to a Local Standard of Rest (LSR) frame.
 
 Science requirement ScR-0032 states:
 
-- ScR-0032: [The DSA2000 system shall be capable of] correcton for all motion relative to LSR with accuracy $< 0.01$ km/s.
+- ScR-0032: [The DSA2000 system shall be capable of] correction for all motion relative to LSR with accuracy $< 0.01$ km/s.
 
-Such correction may be carried out in post-processing, by interpolating the frequency channels of a given data set onto a standard velocity frame.
-Alternatively, the center frequency of each frequency channel may be adjusted in real-time to track the doppler shift of a source.
-Whatever the mechanism, corrections must be applied before summing together data from time periods over which the center frequency of a frequency channel moves significantly.
+Such adjustment may be carried out after correlation or image-making, by interpolating the frequency channels of a given data set onto a standard velocity frame.
+Alternatively, the center frequency of each frequency channel may be adjusted in real time to track the doppler shift of a source.
+Whatever the mechanism, adjustment must be applied before summing together data from time periods over which the center frequency of a frequency channel moves significantly.
 
-For DSA-2000, it is useful to be able to track the doppler shift in real-time over the coarse of a mosaic observation, which may last for $10 - 100$ hours.
+For DSA-2000, it is useful to be able to track the doppler shift in real time over the coarse of a mosaic observation, which may last for $10 - 100$ hours.
+This means that the RCP system does not need to add Doppler shift processing to its pipeline prior to writing data to the archiving system.
 
 The following requirement aims to explicitly ensure this is enabled by the RCF design:
 
-- *RcfR-0006*: Over a period of 100 hours, the center frequency of any RCF frequency channel shall not shift by $>10\%$ of the channel width.
+- *RcfR-0006*: Over a period of 100 hours, when measured in the solar barycenter rest frame, the center frequency of any RCF frequency channel shall not shift by $>10\%$ of the channel width.
 
 <!--
 \subsubsection{Doppler Tracking}
@@ -120,17 +121,17 @@ $$
 $$
 
 where $c$ is the speed of light, and $B_{\textrm{max}}$ is the maximum baseline length.
-For the DSA, $B_{\textrm{max}} = 15$ km and **the maximum geometric delay is 50 usec**.
+For the DSA, $B_{\textrm{max}} = 15$ km and **the maximum geometric delay is 50 \textmu s.**
 
 Assuming that digitization of signals from all antennas occurs in a central location, further inter-antenna delays are introduced by analog cabling (and, to a lesser extent, other instrumentation) between the antennas and digitizers.
-Assuming that cable length differences are of length $\sim B_{\textrm{max}}$, and the speed of light in a cable is $\sim \frac{2}{3}c$, **instrumental inter-antenna delays for the DSA2000 will be approximately 75 usec**.
+Assuming that cable length differences are of length $\sim B_{\textrm{max}}$, and the speed of light in a cable is $\sim \frac{2}{3}c$, **instrumental inter-antenna delays for the DSA2000 will be approximately 75 \textmu s.**
 
 Compensation of both geometric and instrumental delays is achieved in a radio telescope's digital processing by using memory buffers to delay the earliest arriving data streams such that they may be coherently combined with the latest arriving.
 The practical implementation of this scheme may utilize buffering in either, or both, of  RCF and RCP.
 For the purposes of producing a viable RCF design, the following requirements are used:
 
- - *RcfR-0007*: RCF shall have sufficient time delay buffers to compensate for DSA2000's maximum geometric delay, 50 usec
- - *RcfR-0008*: Where RCF is required to generate beams from multiple antenna elements, it must be capable of compensating for both instrumental and geometric delays, totalling 125 usec.
+ - *RcfR-0007*: RCF shall have sufficient time delay buffers to compensate for DSA2000's maximum geometric delay, 50 \textmu s
+ - *RcfR-0008*: Where RCF is required to generate beams from multiple antenna elements, it must be capable of compensating for both instrumental and geometric delays, totalling 125 \textmu s.
 
 Implicit in the first requirement is a statement that RCF need not use time-delay buffers to compensate for all instrumental delays before emitting data to RCP.
 It is assumed that large - and mostly stable - instrumental delays corresponding to multiples of the channelized sample period may be absorbed into the RCP buffering system.
@@ -138,7 +139,7 @@ It is assumed that large - and mostly stable - instrumental delays corresponding
 ### Fine Delay
 
 For any digital system which implements time-domain delay compensation using a simple sample buffer, the precision of this correction is limited by the system sample rate.
-Errors of 1 sample in the delay applied to a data stream equate to residual phase errors over the Nyquist band being processed of up to $\pi$ radians.
+Errors of 0.5 samples in the delay applied to a complex data stream equate to residual phase errors over the Nyquist band being processed of up to $\frac{\pi}{2}$ radians (or $\frac{\pi}{4}$ for a real signal).
 In principle, this residual phase slope across the observing band may corrected in downstream processing outside of RCF. However, this requires that the downstream processor knows the delay applied to the data stream (and its resulting error) at any given time.
 
 Processing is simplified if RCF implements a *fine-delay* - that is, a sub-sample delay which is applied as a phase to each frequency channel - within its processing pipeline.
@@ -189,8 +190,8 @@ The following table summarises the derived RCF requirements:
 | *RcfR-0004* | RCF shall generate channels with width $\geq 2.048$ MHz over the frequency range 0.7 to 2.0 GHz. |
 | *RcfR-0005* | RCF shall generate channels which attenuate a signal at the center of an adjacent channel by $\geq 60$ dB. |
 | *RcfR-0006* | Over a period of 100 hours, the center frequency of any RCF frequency channel shall not shift by $>10\%$ of the channel width. |
-| *RcfR-0007* | RCF shall have sufficient time delay buffers to compensate for up to 50 usec delay in the time-domain for all data products. |
-| *RcfR-0008* | Where RCF is required to generate beams from multiple antenna elements, it must be capable of compensating for delays up to 125 usec. |
+| *RcfR-0007* | RCF shall have sufficient time delay buffers to compensate for up to 50 \textmu s delay in the time-domain for all data products. |
+| *RcfR-0008* | Where RCF is required to generate beams from multiple antenna elements, it must be capable of compensating for delays up to 125 \textmu s. |
 | *RcfR-0009* | RCF shall ensure that, after applying a delay correction to a data stream to phase it to a particular sky position, the residual error across any frequency channel shall be $<1^\circ$. |
 | *RcfR-0010* | RCF shall be capable of updating the delay applied to each antenna signal at least 2628 times per second. |
 | *RcfR-0011* | RCF shall form 4 dual-polatization voltage streams, using the *TC* data products defined by *RcfR-0004*. |

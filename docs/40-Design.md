@@ -253,7 +253,7 @@ This data is passed from ADC to FPGA as an 8-lane JESD204C interface running at 
 Once ADC sample streams for a polarization pair are received by a JESD204C receiver in the FPGA, they enter a signal processing pipeline which implements the following functions:
 
 1. Time stamping, where the time reference signals available to each FPGA are used to associate a precise timestamp with each ADC sample. This timestamp is used to label data which are transmitted to downstream processors, and is also used internally to ensure proper timekeeping in the delay and phase tracking system.
-2. Coarse delay correction up to 81920 ADC sampled (up to 51.2 usec at a sample rate of 1600 Msps).
+2. Coarse delay correction up to 81920 ADC sampled (up to 51.2 \textmu s at a sample rate of 1600 Msps).
 3. First-stage Polyphase Filter Bank (PFB) generating 256 channels, each 8.33 MHz wide and overlapping by a factor of $\frac{4}{3}$.
 4. Fine-Delay correction and phase-rotation, to allow the phase and delay of each signal path to be tracked as the sky rotates, and to allow small frequency shifts to be applied to each 8.33 MHz channel to allow potential compensation for any source doppler shift.
 5. Four parallel second-stage filterbank pathways, generating channels at NC, AC, BC, and TC resolutions, and removing the $\frac{4}{3}$ overlap between channels.
@@ -278,7 +278,7 @@ These timestamps are carried with ADC samples through the processin pipeline, so
 
 #### Coarse Delay Correction
 
-On-chip *UltraRAM* blocks are used to implement a coarse delay buffer for each of the two signal paths. These buffers are 640 kiB deep, and allow compensation for delays of up to 81920 samples (51.2 usec at a sample rate of 1600 Msps), satisfying requirement RcfR-0007.
+On-chip *UltraRAM* blocks are used to implement a coarse delay buffer for each of the two signal paths. These buffers are 640 kiB deep, and allow compensation for delays of up to 81920 samples (51.2 \textmu s at a sample rate of 1600 Msps), satisfying requirement RcfR-0007.
 
 #### First-Stage PFB
 
@@ -297,7 +297,7 @@ A tiered approach to time-keeping is used to ensure that phasors values may be u
 
 1. Messages from MNC to RCF are sent at a rate of ~1 Hz, and contain a delay polynomial which specifies the delay to be applied to a given antenna at a given time.
 2. Every ~100ms, a CPU-based delay control module calculates the delay, phase, and per-spectrum delay-increment and phase-increment which should be applied to a pipeline's signals. This delay, phase, delay-rate, and phase-rate are written to FPGA registers, and a new coarse delay is set. A timed trigger is used so that all new parameters are applied to data simultaneously.
-3. Every ~1 usec, the phasors to be applied to each 8.33 MHz channel are updated by the FPGA.
+3. Every ~1 \textmu s, the phasors to be applied to each 8.33 MHz channel are updated by the FPGA.
 
 With this architecture, delays are updated at ~MHz rate, comfortably satisfying RcfR-0010.
 Delay-correcting 8.33 MHz channels also satisfies RcfR-0009 -- that the phase error after delay application across a channel be $<1\circ$ -- since, at 1600 Msps -- the sub-sample component of delay is 0.625 ns, which represents a maximum phase deviation from the center of an 8.33 MHz channel of $\pm 0.9^\circ$.

@@ -93,19 +93,11 @@ The compromise chosen is to use an FPGA SoM hosted on a custom carrier board.
 This provides the customisability of a dedicated board purpo:w
 se-built for the DSA2000 project, while also leveraging the significant design and testing effort that has gone into the SoM designed commercially.
 
-RCF has chosen the iW-RainboW-G35M SoM from iWave Systems Technologies[^iwave] (Figure \ref{figLiwave-zu11}), populated with a Xilinx/AMD Zynq Ultrascale+ ZU11-EG System-on-Chip, which is, itself, a CPU and FPGA integrated into a single chip package.
+RCF has chosen the iW-RainboW-G35M SoM from iWave Systems Technologies[^iwave] (Figure \ref{fig:iwave-zu11}), populated with a Xilinx/AMD Zynq Ultrascale+ ZU11-EG System-on-Chip, which is, itself, a CPU and FPGA integrated into a single chip package.
 
-<!--
-![\label{fig:iwave-zu11}The iW-RainboW-G35M system on module from iWave Systems Technologies incorporates a Xilinx/AMD Zynq Ultrascale+ System-on-Chip with power and RAM support infrastructure on a small module designed to be mounted to a larger circuit board. *Image credit: iWave System Technologies*](images/iwave-zu11.png){width=40%}
-![](images/iwave-zu11.png){width=40%} ![](images/iwave-zu11-rear.png){width=40%}
--->
-![](images/iwave-zu11.png){width=40%}  ![](images/iwave-zu11-rear.png){width=40%}
-\begin{figure}[h]
-\label{fig:iwave-zu11}
-\caption{The top (left) and bottom (right) of the iW-RainboW-G35M system on module from iWave Systems Technologies.
-The module incorporates a Xilinx/AMD Zynq Ultrascale+ System-on-Chip with power and RAM support infrastructure on a assembly designed to be mounted to a larger circuit board.
-\emph{Image credit: iWave System Technologies}}
-\end{figure}
+![\label{fig:iwave-zu11}The top (left) and bottom (right) of the iW-RainboW-G35M system on module from iWave Systems Technologies.
+The module incorporates a Xilinx/AMD Zynq Ultrascale+ System-on-Chip with power and RAM support infrastructure on an assembly designed to be mounted to a larger circuit board.
+\emph{Image credit: iWave System Technologies}}](images/iwave-front-rear.png){width=100%}
 
 The ZU11-EG is a mid-range FPGA, with 0.65 million logic cells, 2928 hardware DSP slices, and 43.6 Mb of dedicated on-chip RAM.
 
@@ -182,19 +174,20 @@ This estimate is based on hardware tests of an iWave SoM and AD9081 ADC board[^a
 A 50\% margin is added to this figure to account for functionality not yet included in these tests, including the use of off-chip RAM and high-speed Ethernet interfaces.
 
 [^adc-devboard]: The AD9082 part is similar to the AD9207, but also includes digital-to-analog conversion capabilities, which RCF does not require.
-However, unlike the AD9207, the AD9082 is provided as a development board (AD9082-FMCA-EBZ, (https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/eval-ad9082.html)[https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/eval-ad9082.html]) that can be used with iWave's off-the-shelf SoM evaluation kit.
+However, unlike the AD9207, the AD9082 is provided as a development board (AD9082-FMCA-EBZ, [https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/eval-ad9082.html](https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/eval-ad9082.html)) that can be used with iWave's off-the-shelf SoM evaluation kit.
 
 The breakdown of power consumption in a fully-populated RCF rack is:
 
-| Component | Quantity | Unit Consumption (W) | Total Consumption (W) | Notes |
-| ------- | ---- | ----- | ----- | -------------------------------------------------------------- |
-| FSM | 80 | 75 | 6000 | Estimated from hardware tests |
-| SRM | 8 | 10 | 80 | Estimate | 
-| Fan Tray | 4 | 97 | 388 | Model Schroff 10713-554 |
-| Power Supply | 2 | 304 | 608 | 10\% inefficiency when supplying FSMs and SRMs |
-| 1 GbE switch | 1 | 24 | 24 | Model FS S3910-24TF |
-| 100 GbE switch | 1 | 600 | 600 | Model FS N8560-64C | 
-| **RACK TOTAL** |  |  | **7700**| |
+| Component | Quantity | Unit Power (W) | Total Power (W) | Notes |
+| :------ | :-----: | :-----: | :-----: | :----------------------- |
+| FSM | 80 | 75 | 6000 | Estimated from development hardware tests using representative firmware|
+| FSM       | 80       | 75                   | 6000 | Estimated from hardware tests |
+| SRM       | 8        | 10                   | 80   | Estimate | 
+| Fan Tray  | 4        | 97                   | 388  | Model Schroff 10713-554 |
+| Power Supply | 2     | 304                  | 608  | 10\% inefficiency when supplying FSMs and SRMs |
+| 1 GbE switch | 1     | 24                   | 24   | Model FS S3910-24TF |
+| 100 GbE switch | 1   | 600                  | 600  | Model FS N8560-64C | 
+| **RACK TOTAL** |     |                      | **7700** | |
 
 
 #### Beamformer Rack \label{sec:BeamformerRack}
@@ -225,9 +218,9 @@ For this reason, only a single fan tray is usd to cool three subrack enclosures.
 
 Assuming a power budget of 40W per FSM, and 1500W for each PT server, the breakdown of power consumption in the beamforming rack is:
 
-| Component | Quantity | Unit Consumption (W) | Total Consumption (W) | Notes |
-| ------- | ---- | ----- | ----- | -------------------------------------------------------------- |
-| FSM | 30 | 40 | 1200 | Estimate |
+| Component | Quantity | Unit Power (W) | Total Power (W) | Notes |
+| :------ | :-----: | :-----: | :-----: | :----------------------- |
+| FSM | 30 | 40 | 1200 | Estimated from development hardware tests using representative firmware|
 | SRM | 3 | 10 | 30 | Estimate | 
 | Fan Tray | 1 | 97 | 97 | Model Schroff 10713-554 |
 | Power Supply | 1 | 123 | 123 | 10\% inefficiency when supplying FSMs and SRMs |

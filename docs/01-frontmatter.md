@@ -21,4 +21,9 @@ revisions:
   sections: 2. Requirements
   remarks: Re-designate as design document. Minor typo/formatting fixes. Add Beamforming requirement.
   authors: JH
+- version: 2.1
+  date: 2023-10-17
+  sections: 3. Design
+  remarks: Typo fixes. Cross-ref fixes. Table overflow fixes.
+  authors: JH
 ...

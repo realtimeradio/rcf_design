@@ -34,7 +34,7 @@ As discussed in Section \ref{sec:freq-res}, three different channelization produ
 ## Hardware
 
 RCF requires hardware to digitize and process the 4096 RF signals provided by ASP.
-Since ASP is responsible for transporting all analog signals back to a central processing facility, RCF is free to use a hardware architecture that requires that any number of signals be processed in each physical hardware module.
+Since ASP is responsible for transporting all analog signals to a central processing facility, RCF is free to use a hardware architecture that requires that any number of signals be processed in each physical hardware module.
 However, for simplicity and modularity, the chosen RCF architecture is one which uses a separate ``FPGA Station Module'' (FSM) to process a dual-polarization pair of signals from a single DSA antenna.
 This architecture thus requires 2048 FSMs (plus some provision of spares) to process signals from the full DSA telescope.
 Though this results in a larger number of modules than an equivalent architecture where multiple antennas are processed on common hardware, this design has the following beneficial features:
@@ -108,10 +108,10 @@ With the FPGA SoM and ADC chip selected for RCF, a custom "carrier board" is req
 A block diagram of the FSM carrier is shown in Figure \ref{fig:rcf-fsm}.
 The board has the following features:
 
-1. Standard 3U Eurocard height (100 mm) and length (220 mm) to facilitate mounting multiple cards vertcally in a standard 19" subrack.
+1. Based around the 100 mm x 220 mm Eurocard form factor, which allows sufficient area for necessary components and can be vertically mounted in a 3U-high subrack of a standard 19" rack.
 2. A backplane connector to allow power, timing reference signals (see [@ts-design]), and control and monitoring signals -- including a 1 Gb Ethernet connection -- to be delivered to the FSM over a backplane with no cables.
-3. Push-on SMC coaxial connectors to allow RF signals to be delivered from an analog receiver board to the FSM ADC without the need for cables.
-4. Push on power and low-speed data (I2C) connectors to allow the FSM to supply power and a control and monioring interface to a connected analog reciever board (see [@asp-design]).
+3. Blind-mate coaxial connectors to allow RF signals to be delivered from an analog receiver board to the FSM ADC without the need for cables.
+4. Blind-mate connector carrying power and low-speed data (eg. I2C) to allow the FSM to supply power and a control and monioring interface to a connected analog reciever board (see [@asp-design]).
 5. Basic peripherals for use during development, including an SD card form which the SoM CPU may be booted, and a USB serial interface for debugging.
 6. Two QSFP28 connectors, providing up to 200 Gb/s of digital IO to the SNW network. These ports may be configured as either 25 GbE or 100 GbE links.
 7. An RJ45 1 Gb Ethernet connector, providing a simple control and monitoring interface to the FSM which does not require the use of the backplane. This is intended to be used during development.

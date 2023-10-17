@@ -55,7 +55,7 @@ The following table summarises *RcfR-0001* through *RcfR-0004*, the bandwidth an
 | *RcfR-0001* | NC | $700 - 2000$           | $\geq 1300$     | $< 146.8$          |
 | *RcfR-0002* | AC | $1388 - 1422$          | $\geq 34$       | $< 9.25$         |
 | *RcfR-0003* | BC | $1419.93 - 1420.88$    | $\geq 0.95$     | $< 1.42$         |
-| *RcfR-0004* | TC | $700 - 2000$           | $1300$            | $<2048$          |
+| *RcfR-0004* | TC | $700 - 2000$           | $1300$            | $\geq 2048$          |
 
 
 
@@ -89,7 +89,7 @@ Whatever the mechanism, corrections must be applied before summing together data
 
 For DSA-2000, it is useful to be able to track the doppler shift in real-time over the coarse of a mosaic observation, which may last for $10 - 100$ hours.
 
-The following requirement is created:
+The following requirement aims to explicitly ensure this is enabled by the RCF design:
 
 - *RcfR-0006*: Over a period of 100 hours, the center frequency of any RCF frequency channel shall not shift by $>10\%$ of the channel width.
 
@@ -166,7 +166,15 @@ For DSA2000, $B=15$ km, $\lambda=15$ cm, giving a **maximum fringe rate of 7.3 H
 In order that, after correction, the relative phase of two antenna signals not change by more than $1^\circ$ over time, delays must be updated at least 360 times every $\frac{1}{7.3}$ seconds.
 This yields the further requirement:
 
-- *RcfR-00010*: RCF shall be capable of updating the delay applied to each antenna signal at least 2628 times per second.
+- *RcfR-0010*: RCF shall be capable of updating the delay applied to each antenna signal at least 2628 times per second.
+
+## Beamforming
+
+*ScR-0025* states that the DSA2000 system shall be capable of simultaneously forming beams with 4 different phase centers within the primary beam, and coherently dedispersing these time-streams.
+De-dispersion is the purview of the PT subsystem and is outside the scope of RCF. However, with the following requirement the formation of beams is explicity made part of the RCF system:
+
+- *RcfR-0011*: RCF shall form 4 dual-polarization voltage streams, using the *TC* data products defined by *RcfR-0004*.
+
 
 ## Summary
 
@@ -176,12 +184,13 @@ The following table summarises the derived RCF requirements:
 | Subsystem Requirement| Description |
 | --------------------- | ------------------------------------------------- |
 | *RcfR-0001* | RCF shall generate channels with width $< 146.8$ kHz over the frequency range 0.7 to 2.0 GHz. |
-| *RcfR-0002* | RCF shall generate channels with width $< 9.25$ kHz over a tunable band between 0.7 and 2.0 GHz|
-| *RcfR-0003* | RCF shall generate channels with width $< 1.42$ kHz over a tunable band between 0.7 and 2.0 GHz|
-| *RcfR-0004* | RCF shall generate channels with width $< 2.048$ MHz over the frequency range 0.7 to 2.0 GHz. |
+| *RcfR-0002* | RCF shall generate channels with width $< 9.25$ kHz over a tunable band with bandwidth $\geq 34$ MHz between 0.7 and 2.0 GHz|
+| *RcfR-0003* | RCF shall generate channels with width $< 1.42$ kHz over a tunable band with bandwidth $\geq 0.95$ MHz between 0.7 and 2.0 GHz|
+| *RcfR-0004* | RCF shall generate channels with width $\geq 2.048$ MHz over the frequency range 0.7 to 2.0 GHz. |
 | *RcfR-0005* | RCF shall generate channels which attenuate a signal at the center of an adjacent channel by $\geq 60$ dB. |
 | *RcfR-0006* | Over a period of 100 hours, the center frequency of any RCF frequency channel shall not shift by $>10\%$ of the channel width. |
 | *RcfR-0007* | RCF shall have sufficient time delay buffers to compensate for up to 50 usec delay in the time-domain for all data products. |
 | *RcfR-0008* | Where RCF is required to generate beams from multiple antenna elements, it must be capable of compensating for delays up to 125 usec. |
 | *RcfR-0009* | RCF shall ensure that, after applying a delay correction to a data stream to phase it to a particular sky position, the residual error across any frequency channel shall be $<1^\circ$. |
 | *RcfR-0010* | RCF shall be capable of updating the delay applied to each antenna signal at least 2628 times per second. |
+| *RcfR-0011* | RCF shall form 4 dual-polatization voltage streams, using the *TC* data products defined by *RcfR-0004*. |

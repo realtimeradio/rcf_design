@@ -486,10 +486,9 @@ $endif$
     {\Large\textbf{$title$}} \par
     \singlespacing
     $for(author)$$author$ \\ $endfor$
-    \doublespacing
-
-    Caltech
-
+    \vspace{\baselineskip}
+    $for(affiliation)$$affiliation$ \\ $endfor$
+    \vspace{\baselineskip}
     \singlespacing\scriptsize
     \begin{tabular}{rl}
       Version:& $for(revisions/last)$$revisions.version$$endfor$\\
@@ -524,7 +523,7 @@ $endif$
 
 \subsection*{Revision History}
 \begin{center}
-  \begin{tabular}{|c|c|c|c|c|}
+    \begin{tabular}{|c|c|c|p{6cm}|c|}
     \hline
     Version & Date & Sections Affected & Reasons/Remarks & Author(s) \\
     \hline

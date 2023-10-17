@@ -13,7 +13,7 @@ The top-level RCF interfaces to other DSA2000 subsystems are shown in Figure \re
 1. Facilities (FAC): FAC provide the space, power, and cooling infrastructure to support RCF.
 1. Signal Data Network (SNW): SNW is a 25/100/400 Gb/s Ethernet network responsible for transporting high-speed digital data products from RCF to RCP and PT. In addition, SNW provides data transmission paths between different RCF processors.
 1. Radio Camera Processor (RCP): RCP receives channelized voltages from RCF, via the SNW network, and uses them to produce images and transient event data products.
-1. Pulsar Timing (PT): PT receives channelized tied-array beam voltages from RCF, via the SNW network, and uses them to produce pulsar timing data products.
+1. Pulsar Timing (PT): PT receives channelized beam voltages from RCF, via the SNW network, and uses them to produce pulsar timing data products.
 
 ![\label{fig:rcf-interfaces}Top-level interfaces to the RCF subsystem. Interfaces which are logical only (MC, whose control messages are delivered via CNW, and RCP, whose data are delivered via SNW) are indicated with dotted arrows.](images/rcf-interfaces.drawio.pdf)
 
@@ -28,7 +28,7 @@ As discussed in Section \ref{sec:freq-res}, three different channelization produ
     1. Narrowband continuum (NC) channelized voltages, covering 700 - 2000 MHz, with a channel bandwidth of <146.8 kHz.
     2. Zoom band "A" (AC) channelized voltages, covering 1388 - 1422 MHz, with a channel bandwidth of <9.25 kHz.
     3. Zoom band "B" (BC) channelized voltages, covering 1419.93 - 1420.88 MHz, with a channel bandwidth of <1.42 kHz.
-2. 4 channelized tied-array beams, which are used by PTS for pulsar timing. These should cover the band 700 - 2000 MHz, with a channel bandwidth of >2048 kHz.
+2. 4 channelized beams, which are used by PTS for pulsar timing. These should cover the band 700 - 2000 MHz, with a channel bandwidth of >2048 kHz.
 
 
 ## Hardware
@@ -197,7 +197,7 @@ There is one further rack in the RCF system, which is configured differently to 
 As discussed further in Section \ref{sec:Firmware}, RCF performs beamforming in two stages.
 The first stage beamforms signals from all dishes connected to a single rack.
 This substantially reduces the amount of data which needs to transported outside the rack.
-A second stage of beamforming is required to combine beams from each of the racks into a full tied-array beams. 
+A second stage of beamforming is required to combine sub-array beams from each of the racks into full-array beams. 
 This architecture is shown in Figure \ref{fig:beamformer-arch}, and requires a rack configured as shown in Figure \ref{fig:beamformer-rack}.
 
 ![\label{fig:beamformer-arch}The RCF beamforming hardware architecture forms "sub-array" beams in each of 26 racks, and transmits these to a final rack to be summed into a full array beam and delivered to the PT subsystem.](images/beamformer-arch.drawio.pdf)

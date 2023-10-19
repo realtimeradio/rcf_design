@@ -1,6 +1,6 @@
 # Design
 
-Here, the preliminary design of the Radio Camera Frontent (RCF) is described and justified.
+Here, the preliminary design of the Radio Camera Frontend (RCF) is described and justified.
 
 ## Interfaces
 
@@ -43,8 +43,8 @@ This architecture thus requires 2048 FSMs (plus some provision of spares) to pro
 Though this results in a larger number of modules than an equivalent architecture where multiple antennas are processed on common hardware, this design has the following beneficial features:
 
 1. Manufacture of FSMs may make use of economies of scale, and leverage high unit-count component purchases.
-2. Dependencies between signal paths from multiple antennas are removed, avoinding system control side effects - for example, the maintenance of one antenna's signal path affecting another.
-3. Each FSM has a lower power-disipation than a module which is tasked with processing signals from multiple antennas, simplifying thermal management.
+2. Dependencies between signal paths from multiple antennas are removed, avoiding system control side effects - for example, the maintenance of one antenna's signal path affecting another.
+3. Each FSM has a lower power-dissipation than a module which is tasked with processing signals from multiple antennas, simplifying thermal management.
 4. FSMs need not use the most powerful FPGA components available, decreasing prototyping costs, and increasing production cost-efficiency, since more powerful FPGAs often have a higher cost-to-performance ratio than smaller parts.
 
 The main drawbacks of such a system are
@@ -56,11 +56,11 @@ The main drawbacks of such a system are
 The first of these drawbacks is mitigated by the choice to use a control and monitoring system designed with scalability in mind.
 The second is not a significant issue, since the timing distribution system is not a major cost-driver of DSA2000 even in the case of distribution to 2048 endpoints.
 Finally, as is discussed in Section \ref{sec:RackLayout}, the physical size of the RCF system is no a major cost driver for DSA2000.
-Further, a more compact architecture involving modules processing signals from mulitple antennas would likely dissipate enough power per module that any significant compute-density savings could only be realised if significant engineering and infrastructure effort was invested in supporting water-cooling of the RCF system.
+Further, a more compact architecture involving modules processing signals from multiple antennas would likely dissipate enough power per module that any significant compute-density savings could only be realised if significant engineering and infrastructure effort was invested in supporting water-cooling of the RCF system.
 
 ### FPGA Station Module Design
 
-The primary components of the FSM are an analog-to-digital converter (ADC), and a field-programmable gate array (FPGA) system-on-module (SOM).
+The primary components of the FSM are an analog-to-digital converter (ADC), and a field-programmable gate array (FPGA) system-on-module (SoM).
 The former is responsible for digitizing the analog signals, and the latter is responsible for processing the digitized data and packaging them in Ethernet frames for transmission to SNW.
 
 
@@ -82,7 +82,7 @@ The AD9207 configuration required by RCF utilises a JESD204C interface to an FPG
 
 #### FPGA System-on-Module
 
-FPGAs at a vast array of price points and peformance levels and may be purchased in a variety of form factors.
+FPGAs at a vast array of price points and performance levels and may be purchased in a variety of form factors.
 These include:
 1. A packaged chip, for integration onto a custom board assembly
 2. A System-on-module (SoM), which is a small board assembly designed to be integrated into a larger system, typically containing an FPGA and critical support infrastructure such as power supply circuitry and memory modules.
@@ -93,8 +93,7 @@ However, the project also has a very large number of signal paths, and thus need
 For this reason, the use of an off-the-shelf processing platform is also not preferable.
 
 The compromise chosen is to use an FPGA SoM hosted on a custom carrier board.
-This provides the customisability of a dedicated board purpo:w
-se-built for the DSA2000 project, while also leveraging the significant design and testing effort that has gone into the SoM designed commercially.
+This provides the customisability of a dedicated board purpose-built for the DSA2000 project, while also leveraging the significant design and testing effort that has gone into the SoM designed commercially.
 
 RCF has chosen the iW-RainboW-G35M SoM from iWave Systems Technologies[^iwave] (Figure \ref{fig:iwave-zu11}), populated with a Xilinx/AMD Zynq Ultrascale+ ZU11-EG System-on-Chip, which is, itself, a CPU and FPGA integrated into a single chip package.
 
@@ -114,7 +113,7 @@ The board has the following features:
 1. Based around the 100 mm x 220 mm Eurocard form factor, which allows sufficient area for necessary components and can be vertically mounted in a 3U-high subrack of a standard 19" rack.
 2. A backplane connector to allow power, timing reference signals (see [@ts-design]), and control and monitoring signals -- including a 1 Gb Ethernet connection -- to be delivered to the FSM over a backplane with no cables.
 3. Blind-mate coaxial connectors to allow RF signals to be delivered from an analog fiber receiver board to the FSM ADC without the need for cables.
-4. A blind-mate connector carrying power and low-speed data (eg. I2C) to allow the FSM to supply power and a control and monioring interface to a connected analog fiber receiver (FRX) board. The FRX is part of the ASP subsystem and is responsible for receiving analog-over-fiber signals from the DSA antennas and converting these to an electrical interface.
+4. A blind-mate connector carrying power and low-speed data (eg. I2C) to allow the FSM to supply power and a control and monitoring interface to a connected analog fiber receiver (FRX) board. The FRX is part of the ASP subsystem and is responsible for receiving analog-over-fiber signals from the DSA antennas and converting these to an electrical interface.
 5. Basic peripherals for use during development, including an SD card form which the SoM CPU may be booted, and a USB serial interface for debugging.
 6. Two QSFP28 connectors, providing up to 200 Gb/s of digital IO to the SNW network. These ports may be configured as either 25 GbE or 100 GbE links.
 7. An RJ45 1 Gb Ethernet connector, providing a simple control and monitoring interface to the FSM which does not require the use of the backplane. This is intended to be used during development, with multiple boards sharing a single Ethernet connection via the backplane in production (see Section \ref{sec:SubrackManagement}).
@@ -128,14 +127,14 @@ Design of the carrier will likely be contracted to the SoM vendor, iWave Systems
 
 It is desirable for FSMs - of which there are more than 2000 - to be mounted in a standard 19" equipment rack, in a manner that makes it as easy as possible to replace a faulty module.
 
-FSMs are designed to be comptible with 19" subracks supporting the Eurocard standard.
-Such subracks are readily available from a variety of vendors, and are readily configurable to accomodate cards of different lengths and widths, with backplanes either conforming to an industry standard, or custom-designed to suit the needs of the system.
+FSMs are designed to be compatible with 19" subracks supporting the Eurocard standard.
+Such subracks are readily available from a variety of vendors, and are readily configurable to accommodate cards of different lengths and widths, with backplanes either conforming to an industry standard, or custom-designed to suit the needs of the system.
 An example of a 3U Eurocard subrack is shown in Figure \ref{fig:eurocard-rack}.
 
 ![\label{fig:eurocard-rack} A basic 3U eurocard chassis, with card guides installed to accommodate ten 1.6 inch (8HP) cards. *Image Credit: Leeman Geophysical LLC*](images/eurocard-rack-photo.png){width=50%}
 
 Multiple FSMs are slotted vertically into a subrack, whose backplane provides power, timing signals, and control interfaces to the modules.
-A fiber receiver board can then be slotted in front of the FSM in the same card guide slots passing analog signals to the FSM via blind-mate connetors.
+A fiber receiver board can then be slotted in front of the FSM in the same card guide slots passing analog signals to the FSM via blind-mate connectors.
 
 Analog inputs are provided to each board assembly via optical RF connections on the front of the fiber receiver board.
 Digital data exits the board assembly via QSFP28 connectors on the rear of the FSM.
@@ -160,16 +159,16 @@ This feature - somewhat similar to the "out-of-band" management often supported 
 
 The RCF design is based around an architecture which hosts 80 FSM boards in a standard height (42U) 19" equipment rack.
 Each rack services 80 dishes in the DSA2000 array, and 26 such racks are required for the full system.
-Since the number of dishes in the array is not a muliple of 80, one rack in the system will only be partially populated with 48 FSMs, leaving at least 11U of extra empty space in this rack.
+Since the number of dishes in the array is not a multiple of 80, one rack in the system will only be partially populated with 48 FSMs, leaving at least 11U of extra empty space in this rack.
 It is anticipated that this space will be utilized by the TS subsystem [@ts-design].
 A fully-populated RCF rack servicing 80 dishes is shown in Figure \ref{fig:rcf-rack}.
 
 
-![\label{fig:rcf-rack}One of 26 racks in the RCF system servicing 80 DSA antennas. The rack comprises 8 3U subracks, each holding 10 FSM assemblies and an SRM board. Pairs of subracks are cooled bottom-to-top using 1U fan trays, with off-the-shelf air deflector trays redirecting airflow so that the rack-level cooling is from front to back. Discrete 1U multi-module power supplies are used to obtain N+1 redundancy and hot-swappability of power supply modules.](images/rack_layout.drawio.pdf)
+![\label{fig:rcf-rack}One of 26 racks in the RCF system servicing 80 DSA antennas. The rack comprises 8 3U subracks, each holding 10 FSM assemblies and an SRM board. Pairs of subracks are cooled bottom-to-top using 1U fan trays, with off-the-shelf air deflector trays redirecting airflow so that the rack-level cooling is from front to back. Discrete 1U multi-module power supplies are used to obtain N+1 redundancy and hot-swapability of power supply modules.](images/rack_layout.drawio.pdf)
 
-RCF racks are designed to be used in a data center which privides front-to-back cooling.
+RCF racks are designed to be used in a data center which provides front-to-back cooling.
 Since the FSM subracks are cooled bottom-to-top, air deflectors and 1U fan trays are used to channel cold air from the front of the rack and upwards through the subracks, with hot air exhausted from the rear of the rack.
-These deflectors and fan trays are off-the-shelf components, with the latter providing healt monitoring capablities.
+These deflectors and fan trays are off-the-shelf components, with the latter providing health monitoring capabilities.
 
 12V DC power is provided to all subracks from a pair of 1U power supply units, which themselves contain multiple hot-swappable power supply modules configured to provide N+1 redundancy.
 It is estimated that each FSM will dissipate approximately 75W of power (with a further 7.5W dissipated by the 12V power supplies owing to conversion inefficiencies).
@@ -217,7 +216,7 @@ Since each RCF has two 100 GbE interfaces, at least 22 boards are required for t
 Since FSMs are hosted in subracks holding 10 boards, the beamforming rack holds 30 modules, providing several hot spares.
 
 It is anticipated that each FSM in the beamforming rack will consume much less power than those in the other racks, since they have a much lower compute load.
-For this reason, only a single fan tray is usd to cool three subrack enclosures.
+For this reason, only a single fan tray is used to cool three subrack enclosures.
 
 Assuming a power budget of 40W per FSM, and 1500W for each PT server, the breakdown of power consumption in the beamforming rack is:
 
@@ -239,7 +238,7 @@ In this section the digitization and processing methods used by the RCF firmware
 ### Digitization
 
 Since the DSA's science band of interest is 700 - 2000 MHz, the simplest digitization configuration is to direct-sample these signals at at least twice the highest RF frequency - i.e., sample at at least 4000 Msps.
-The RCF design assumes that the samping rate will be 4800 Msps, which results in analog anti-aliasing filter requirements which should be easy to meet.
+The RCF design assumes that the sampling rate will be 4800 Msps, which results in analog anti-aliasing filter requirements which should be easy to meet.
 
 Rather than pass the entire digitized band from the ADC chip to FPGA, the RCF leverages the mixing, filtering, and decimation capabilities of the ADC to reduce the bandwidth of the digitized data as early as possible in the processing pipeline.
 ADC signal processing configuration is shown in Figure \ref{fig:adc-config}.
@@ -281,7 +280,7 @@ The TS sync reference is used to set each FPGA's TT counter with a particular AD
 Since edges of the 375 Hz reference occur at a larger separation than NTP precision, successive edges can be disambiguated using the local CPU's system time, and all FPGAs can agree to associate a common time to the ADC sample associated with any given edge.
 Future samples may be associated with TT by interrogating the value of an FPGA's TT counter.
 
-Timestamps are carried with ADC samples through the processing pipeline, so that processing blocks which need to know the time associated with a sample (eg, the fine delay correction and phase rotation block) can do so.
+Timestamps are carried with ADC samples through the processing pipeline, so that processing blocks which need to know the time associated with a sample (eg., the fine delay correction and phase rotation block) can do so.
 
 #### Coarse Delay Correction
 
@@ -290,17 +289,17 @@ On-chip *UltraRAM* blocks are used to implement a coarse delay buffer for each o
 #### First-Stage PFB
 
 The first stage filterbank generates 256 channels, each 8.33 MHz wide and overlapping by a factor of $\frac{4}{3}$.
-The filterband is 32-taps long, and uses a Hann window to generate channels with the response shown in Figure \ref{fig:stage1-response}.
+The filterbank is 32-taps long, and uses a Hann window to generate channels with the response shown in Figure \ref{fig:stage1-response}.
 
-![\label{fig:stage1-response}The PFB response of the 32-tap, Hann-windowed first stage filter, which is oversampled by a factor of 4/3. The frequency axis is normalized such that bins centers are separated by 1. Solid black verical lines indicate location of bin enters. Shaded regions, bounded by dashed black verical lines indicate the non-overlapping bin widths, which are 6.25 MHz wide. Dotted red vertical lines indicate the Nyquist boundaries of the overlapping bins, each of which is 8.33 MHz wide.](images/first_stage_pfb_response.pdf)
+![\label{fig:stage1-response}The PFB response of the 32-tap, Hann-windowed first stage filter, which is oversampled by a factor of 4/3. The frequency axis is normalized such that bins centers are separated by 1. Solid black vertical lines indicate location of bin enters. Shaded regions, bounded by dashed black vertical lines indicate the non-overlapping bin widths, which are 6.25 MHz wide. Dotted red vertical lines indicate the Nyquist boundaries of the overlapping bins, each of which is 8.33 MHz wide.](images/first_stage_pfb_response.pdf)
 
 #### Fine Delay Correction and Phase Rotation
 
-Fine delay correction and phase rotation are implemented as a multplication of each 8.33 MHz channel with a unit-magnitude complex exponential.
+Fine delay correction and phase rotation are implemented as a multiplication of each 8.33 MHz channel with a unit-magnitude complex exponential.
 
 The phase of this exponential varies over time, and compensates for the changing path lengths from source to antenna, as well as the related effects of the upstream digital LO.
 
-A tiered approach to time-keeping is used to ensure that phasors values may be updated sufficiently quickly without the need for high data-rate communication between the RCF and MC subsystems.
+A tiered approach to time-keeping is used to ensure that phasor values may be updated sufficiently quickly without the need for high data-rate communication between the RCF and MC subsystems.
 
 1. Messages from MC to RCF are sent at a rate of ~1 Hz, and contain a delay polynomial which specifies the delay to be applied to a given antenna at a given time.
 2. Every ~100ms, a CPU-based delay control module calculates the delay, phase, and per-spectrum delay-increment and phase-increment which should be applied to a pipeline's signals. This delay, phase, delay-rate, and phase-rate are written to FPGA registers, and a new coarse delay is set. A timed trigger is used so that all new parameters are applied to data simultaneously.
@@ -328,7 +327,7 @@ Second-stage PFBs for the NC, AC, and BC channels are all 8-tap, Hann-filtered, 
 ![\label{fig:stage2-response}The PFB response of the second stage filters for NC, AC, and BC channelization products.](images/second_stage_pfb_response.pdf)
 
 The length of these filters is limited to 8-taps in order to fit in available FPGA RAM resources.
-The second stage TC filter is upchnnelises by only a factor of 4, and thus can be made longer while still fitting in a reasonable RAM footprint.
+The second stage TC filter is upchannelizes by only a factor of 4, and thus can be made longer while still fitting in a reasonable RAM footprint.
 The TC filter has 24 taps, and a response shown in Figure \ref{fig:stage2tc-response}.
 
 ![\label{fig:stage2tc-response}The PFB response of the second stage filters for TC channelization products.](images/second_stage_pfb_tc_response_1xscale.pdf)
@@ -365,7 +364,7 @@ The beamformer subsystem receives 8 TC channels of data from the 80 dual-polariz
 
 It would be easiest to simply multiply TC channels by an appropriate complex-valued weight and sum them to form each beam.
 Unfortunately, this results in an unacceptable level of frequency smearing, given the broad bandwidth of the TC channels and wide field of view of the DSA dishes (see Section \ref{sec:freq-res}).
-Instead, the beamformer implements a 32-point fast-convolution filter on each TC channel, effectivey upchannelizing to 65 kHz, phase rotating, and then re-synthesizing 2.1 MHz channels.
+Instead, the beamformer implements a 32-point fast-convolution filter on each TC channel, effectively upchannelizing to 65 kHz, phase rotating, and then re-synthesizing 2.1 MHz channels.
 
 Beam pointing delays are received from the TS subsystem and applied to data in a similar fashion to the fine delay correction and phase rotation module.
 However, since the data input to the beamformer have already been phased to the direction the array is pointing, required delay and phase update rates are relatively low.

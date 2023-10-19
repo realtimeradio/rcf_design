@@ -69,7 +69,7 @@ There is currently only one science requirement from which a channel response re
 
  1. ScR-0041 / *RcfR-0005*: Attenuation from the center of one channel to an adjacent channel shall be $\geq 60$ dB.
 
-> Other requirements may be useful in further specifing channel response, for example:
+> Other requirements may be useful in further specifying channel response, for example:
 
 > - Maximum allowed passband ripple
 > - Minimum attenuation at >1 channel offset
@@ -163,7 +163,7 @@ This yields the further requirement:
 ## Beamforming
 
 *ScR-0025* states that the DSA2000 system shall be capable of simultaneously forming beams with 4 different phase centers within the primary beam, and coherently dedispersing these time-streams.
-De-dispersion is the purview of the PT subsystem and is outside the scope of RCF. However, with the following requirement the formation of beams is explicity made part of the RCF system:
+Dedispersion is the purview of the PT subsystem and is outside the scope of RCF. However, with the following requirement the formation of beams is explicitly made part of the RCF system:
 
 - *RcfR-0011*: RCF shall form 4 dual-polarization voltage streams, using the *TC* data products defined by *RcfR-0004*.
 
@@ -185,4 +185,4 @@ The following table summarises the derived RCF requirements:
 | *RcfR-0008* | Where RCF is required to generate beams from multiple antenna elements, it must be capable of compensating for delays up to 160 \textmu s. |
 | *RcfR-0009* | RCF shall ensure that, after applying a delay correction to a data stream to phase it to a particular sky position, the residual error across any frequency channel shall be $<1^\circ$. |
 | *RcfR-0010* | RCF shall be capable of updating the delay applied to each antenna signal at least 2628 times per second. |
-| *RcfR-0011* | RCF shall form 4 dual-polatization voltage streams, using the *TC* data products defined by *RcfR-0004*. |
+| *RcfR-0011* | RCF shall form 4 dual-polarization voltage streams, using the *TC* data products defined by *RcfR-0004*. |

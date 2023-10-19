@@ -23,12 +23,15 @@ The basic specifications for these interfaces are described in Section \ref{sec:
 
 The data products which must be produced by RCF are:
 
-1. Channelized voltages, which are used by RCP for image processing and transient searching.
+1. Complex-valued sample streams, representing voltage time series for each polarization, antenna, and frequency channel.
+These are used by RCP for image processing and transient searching.
 As discussed in Section \ref{sec:freq-res}, three different channelization products are required:
     1. Narrowband continuum (NC) channelized voltages, covering 700 - 2000 MHz, with a channel bandwidth of <146.8 kHz.
     2. Zoom band "A" (AC) channelized voltages, covering 1388 - 1422 MHz, with a channel bandwidth of <9.25 kHz.
     3. Zoom band "B" (BC) channelized voltages, covering 1419.93 - 1420.88 MHz, with a channel bandwidth of <1.42 kHz.
-2. 4 channelized beams, which are used by PTS for pulsar timing. These should cover the band 700 - 2000 MHz, with a channel bandwidth of >2048 kHz.
+2. Complex-valued streams representing voltage time series from channelized, dual-polarization beams formed in 4 different directions.
+These are used by PT for pulsar timing. Each beam should cover the band 700 - 2000 MHz, with a channel bandwidth of >2048 kHz.
+It is assumed that the two polarizations of each beam will correspond to the native polarizations of the DSA2000 antennas.
 
 
 ## Hardware
@@ -111,10 +114,10 @@ The board has the following features:
 1. Based around the 100 mm x 220 mm Eurocard form factor, which allows sufficient area for necessary components and can be vertically mounted in a 3U-high subrack of a standard 19" rack.
 2. A backplane connector to allow power, timing reference signals (see [@ts-design]), and control and monitoring signals -- including a 1 Gb Ethernet connection -- to be delivered to the FSM over a backplane with no cables.
 3. Blind-mate coaxial connectors to allow RF signals to be delivered from an analog fiber receiver board to the FSM ADC without the need for cables.
-4. Blind-mate connector carrying power and low-speed data (eg. I2C) to allow the FSM to supply power and a control and monioring interface to a connected analog fiber receiver board (see [@asp-design]).
+4. A blind-mate connector carrying power and low-speed data (eg. I2C) to allow the FSM to supply power and a control and monioring interface to a connected analog fiber receiver (FRX) board. The FRX is part of the ASP subsystem and is responsible for receiving analog-over-fiber signals from the DSA antennas and converting these to an electrical interface.
 5. Basic peripherals for use during development, including an SD card form which the SoM CPU may be booted, and a USB serial interface for debugging.
 6. Two QSFP28 connectors, providing up to 200 Gb/s of digital IO to the SNW network. These ports may be configured as either 25 GbE or 100 GbE links.
-7. An RJ45 1 Gb Ethernet connector, providing a simple control and monitoring interface to the FSM which does not require the use of the backplane. This is intended to be used during development.
+7. An RJ45 1 Gb Ethernet connector, providing a simple control and monitoring interface to the FSM which does not require the use of the backplane. This is intended to be used during development, with multiple boards sharing a single Ethernet connection via the backplane in production (see Section \ref{sec:SubrackManagement}).
 
 Since the FSM carrier board is relatively simple, it can be designed and tested in a short timeframe at a relatively low cost.
 Design of the carrier will likely be contracted to the SoM vendor, iWave Systems Technologies, who already have experience in designing carrier boards similar to that which RCF requires.
@@ -142,7 +145,7 @@ On the rear of the backplane, a pair of coaxial connectors provide timing signal
 Each FSM is fitted with a finned heat-sink, and air is blown through the subrack from bottom to top using external fan trays (See Section \ref{sec:RackLayout}).
 With heat-sinks fitted, the FSMs are 1.6 inches (8HP) wide, and thus 10 FSMs may be mounted in a standard 84 HP subrack.
 
-### Subrack Management Card
+### Subrack Management Card \label{sec:SubrackManagement}
 
 Since the RCF system contains more than 2000 FSMs, densely packed in a relatively small number of racks, it is desirable to avoid the need for each FSM to have a cabled 1 GbE control and monitoring connection.
 To this end, a "Subrack Management Card" (SRM, Figure \ref{fig:srm}) is included in each subrack, which uses a 1 GbE switch chip to allow all FSMs in a subrack to be reached via a single RJ45 Ethernet connection, via the subrack backplane.
@@ -200,7 +203,7 @@ This substantially reduces the amount of data which needs to transported outside
 A second stage of beamforming is required to combine sub-array beams from each of the racks into full-array beams. 
 This architecture is shown in Figure \ref{fig:beamformer-arch}, and requires a rack configured as shown in Figure \ref{fig:beamformer-rack}.
 
-![\label{fig:beamformer-arch}The RCF beamforming hardware architecture forms "sub-array" beams in each of 26 racks, and transmits these to a final rack to be summed into a full array beam and delivered to the PT subsystem.](images/beamformer-arch.drawio.pdf)
+![\label{fig:beamformer-arch}The RCF beamforming hardware architecture forms "sub-array" beams in each of 26 racks, and transmits these to a final rack to be summed into a full array beam and delivered to the PT subsystem. Since there are 2048 DSA antennas, one rack of the 26 is only partially filled, leaving space for TS hardware [@ts-design]](images/beamformer-arch.drawio.pdf)
 
 ![\label{fig:beamformer-rack}A dedicated beamformer rack holds networking hardware to receive beams formed in all the other racks in the RCF system, and further FSMs which act to sum these beams together. Final beam products are then output to servers which are part of the PT subsystem.](images/pulsar-timing-rack.drawio.pdf)
 
@@ -243,7 +246,7 @@ ADC signal processing configuration is shown in Figure \ref{fig:adc-config}.
 
 ![\label{fig:adc-config}The configuration of RCF's AD9207 data path. RF signals are sampled at 4800 Msps, before being mixed, filtered, and decimated to deliver a 1600 MHz Nyquist band centred at 1350 MHz.](images/rcf-adc-pipeline.drawio.pdf){width=70%}
 
-Analog samples are initially digitized at 4800 Msps with 12 bits of resolution, and then mixed with a digitally generated oscillator, filtered, and decimated to produce a quadrature-sampled 1600 MHz Nyquist baseband centered at 0 Hz.
+Analog samples are initially digitized at 4800 Msps with 12 bits of resolution, and then quadrature downconverted with a 1350 MHz digitally-generated LO, filtered, and decimated by a factor of 3 to produce a 1600 MHz Nyquist baseband centered at 0 Hz.
 The AD9207's decimation filters have a usable passband -- defined as the region with better than 100 dB image rejection and less than $\pm 0.001$ dB of passband ripple -- of 81.4\% [@ad9207].
 For a sampling rate of 1600 Msps, this corresponds to a passband of 1302.1 MHz, which is sufficient to cover the 700 - 2000 MHz band of interest.
 This data is passed from ADC to FPGA as an 8-lane JESD204C interface running at 13.2 Gbps per lane.
@@ -252,14 +255,14 @@ This data is passed from ADC to FPGA as an 8-lane JESD204C interface running at 
 
 Once ADC sample streams for a polarization pair are received by a JESD204C receiver in the FPGA, they enter a signal processing pipeline which implements the following functions:
 
-1. Time stamping, where the time reference signals available to each FPGA are used to associate a precise timestamp with each ADC sample. This timestamp is used to label data which are transmitted to downstream processors, and is also used internally to ensure proper timekeeping in the delay and phase tracking system.
+1. Time stamping, where a counter which represents the telescope's time is used to associate a precise timestamp with each ADC sample. A telescope time (TT) counter is maintained on each FPGA and all are synchronized by the TS system [@ts-design]. Timestamps is used to label data which are transmitted to downstream processors, and is also used internally to ensure proper timekeeping in the delay and phase tracking system.
 2. Coarse delay correction up to 81920 ADC sampled (up to 51.2 \textmu s at a sample rate of 1600 Msps).
 3. First-stage Polyphase Filter Bank (PFB) generating 256 channels, each 8.33 MHz wide and overlapping by a factor of $\frac{4}{3}$.
 4. Fine-Delay correction and phase-rotation, to allow the phase and delay of each signal path to be tracked as the sky rotates, and to allow small frequency shifts to be applied to each 8.33 MHz channel to allow potential compensation for any source Doppler shift.
 5. Four parallel second-stage filterbank pathways, generating channels at NC, AC, BC, and TC resolutions, and removing the $\frac{4}{3}$ overlap between channels.
-6. Requantization of output data to 4+4 bit complex resolution.
+6. Requantization of output data to 4+4 bit complex resolution, after multiplication by a frequency-dependent gain factor that can be used to compensate for analog gain slope.
 7. Packetization of data into a stream of UDP packets output to the SNW system over a pair of 25 GbE connections.
-8. Beamforming of TC data from 80 dishes, received via a 25GbE connection, to form 4 beams at 8+8 bit complex resolution. This data is transmitted back over 25 GbE to be summed by separate FPGAs in the beamformer rack (see Section \ref{sec:BeamformerRack})[^bf-fpgas].
+8. Beamforming of a frequency-subset of TC data from the 80 antennas which are serviced in the same equipment rack. These data are received via a 25GbE connection, and used to form 4 beams at 8+8 bit complex resolution. These data are transmitted back over 25 GbE to be summed by separate FPGAs in the beamformer rack (see Section \ref{sec:BeamformerRack})[^bf-fpgas].
 
 [^bf-fpgas]: The firmware running on the FPGAs in the beamformer rack simply receives data from multiple FPGAs, sums it without any further processing, and transmits (via SNW) to the PT system. The firmware running on these FPGAs is not discussed further here.
 
@@ -271,10 +274,14 @@ Each processing block is described in more detail below.
 #### Time Stamping
 
 Network Time Protocol ensures that the CPU subsystem on each FPGA board agrees the time to a precision better than 1 ms. However, this is not sufficient for precisely assigning a time to each ADC sample such that data processed by multiple FPGAs can be coherently combined.
-For this reason, the TS system provides a 375 Hz signal to each FPGA whose time of arrival is precisely controlled such that the ADC sample associated with an edge of the 375 Hz reference can be reliably identified.
-Since edges of the 375 Hz reference occur at a larger separation than NTP precision, successive edges can be disambiguated using local system time, and all FPGAs can agree to associate a common time to the ADC sample associated with any given edge.
+To enable timekeeping with the necessary accuracy, each FPGA maintains, in it's programmable fabric, a telescope time (TT) counter, which increments synchronously with ADC sampling.
+TT counters between multiple FPGAs are synchronized using a reference signal -- planned to be a fast-rise 375 Hz clock -- provided by the TS system.
+This system is described in detail in [@ts-design].
+The TS sync reference is used to set each FPGA's TT counter with a particular ADC sample.
+Since edges of the 375 Hz reference occur at a larger separation than NTP precision, successive edges can be disambiguated using the local CPU's system time, and all FPGAs can agree to associate a common time to the ADC sample associated with any given edge.
+Future samples may be associated with TT by interrogating the value of an FPGA's TT counter.
 
-These timestamps are carried with ADC samples through the processin pipeline, so that processing blocks which need to know the time associated with a sample (eg, the fine delay correction and phase rotation block) can do so.
+Timestamps are carried with ADC samples through the processing pipeline, so that processing blocks which need to know the time associated with a sample (eg, the fine delay correction and phase rotation block) can do so.
 
 #### Coarse Delay Correction
 
@@ -326,22 +333,24 @@ The TC filter has 24 taps, and a response shown in Figure \ref{fig:stage2tc-resp
 
 ![\label{fig:stage2tc-response}The PFB response of the second stage filters for TC channelization products.](images/second_stage_pfb_tc_response_1xscale.pdf)
 
-If necessary, it is easy to modify the shape of the TC filters to give better channel isolation at the expense of passband width, as shown in Figure \ref{fig:stage2tc-response-scale}.
-This is a strategy which has been adopted by other pulsar timing experiements (see, for example, [@Bailes2020]).
+Other pulsar timing experiments have found it beneficial to tune passband shape to give better isolation at the expense of passband width [@Bailes2020].
+If necessary, it is easy to modify the shape of the TC filters in a similar fashion, as shown in Figure \ref{fig:stage2tc-response-scale}, without impacting other data products.
 
 ![\label{fig:stage2tc-response-scale}A possible PFB response of the second stage filters for TC channelization products with the filter passbands set to 85% of their usual width.](images/second_stage_pfb_tc_response_0.85xscale.pdf)
 
 #### Requantization
 
-Requantization to complex sample with 4 bits of precision per real and imaginary component is used to reduce the data output rate of each FPGA.
+Requantization of complex samples to 4 bits of precision per real and imaginary component is used to reduce the data output rate of each FPGA.
 Values are scaled using a frequency-dependent, runtime-programmable scaling factor, and then rounded, with saturation to value in the interval $[-7, 7]$.
 Though a 4-bit two's complement representation is able to use the value -8, this value is prohibited in order to maintain a symmetric quantization scheme.
-Instead, the 4 bit code "0b1000" is used to indicate that a value is flagged.
-Flagging logic is still under design.
+Instead, the 4 bit code "0b1000" is used to indicate that a value is not valid.
+This functionality, which is still in development, is intended to be used to support blanking data which are contaminated with interference.
 
 #### Packetization
 
-Data are reordered and packetized into a stream of UDP packets. NC, AC, or BC data are transmitted over 25 GbE to destinations in the RCP system.
+Data are reordered and packetized into a stream of UDP packets.
+Each packet contains a header which indicates the timestamp, source antenna and frequency channels present in the packet's payload.
+NC, AC, or BC data are transmitted over 25 GbE to destinations in the RCP system using the format described in [@icd-rcf-rcp].
 TC data are transmitted over 25 GbE to FPGAs within the same rack, such that each of 78 FPGAs in a rack receive 8 frequency channels of TC data from all dishes serviced by the rack.
 
 Since data entering the packetization system has been quantized to 4+4-bit, it has substantially lower data rate than earlier in the system.
@@ -352,16 +361,15 @@ In the case of TC packets, reordering in DDR4 memory means that there is a large
 
 #### Beamforming
 
-The beamformer subsystem receives 8 TC channels of data for 80 dual-polarization signals, and uses these to form 4 sub-array beams.
+The beamformer subsystem receives 8 TC channels of data from the 80 dual-polarization signals being processed in the local equipment rack, and uses these to form 4 sub-array beams.
 
-It would be easiest to simply multiply TC channels by an appropriate phase factor and sum them to form each beam.
+It would be easiest to simply multiply TC channels by an appropriate complex-valued weight and sum them to form each beam.
 Unfortunately, this results in an unacceptable level of frequency smearing, given the broad bandwidth of the TC channels and wide field of view of the DSA dishes (see Section \ref{sec:freq-res}).
 Instead, the beamformer implements a 32-point fast-convolution filter on each TC channel, effectivey upchannelizing to 65 kHz, phase rotating, and then re-synthesizing 2.1 MHz channels.
 
-Beam pointing delays are received from the MC subsystem and applied to data in a similar fashion to the fine delay correction and phase rotation module.
+Beam pointing delays are received from the TS subsystem and applied to data in a similar fashion to the fine delay correction and phase rotation module.
 However, since the data input to the beamformer have already been phased to the direction the array is pointing, required delay and phase update rates are relatively low.
 
 Since the beamforming processing combines signals from 80 dishes, output data precision of 8+8 bit is maintained, to allow for an increase in signal-to-noise.
 
 This 8+8 bit data, which totals 2.13 Gb/s from each FPGA in a rack and represents 4 dual-polarization beams, is transmitted over 25 GbE to the beamformer rack, where it is summed with data from other racks to form a full array beam at 16+16-bit precision (see Figure \ref{fig:beamformer-arch}). 
-### Resource Utilization

@@ -5,17 +5,17 @@ Dependencies of RCF on other DSA2000 subsystems are as follows:
 
 ## Analog Signal Path (ASP)
 
-1. ASP must deliver 4096 RF signals to RCF, with a bandwidth of 700 - 2000 MHz, compatible with a Nyquist bandwidth of 4800 Msps.
+1. ASP must deliver 4096 RF signals to RCF, with a bandwidth of 700 - 2000 MHz, compatible with a Nyquist bandwidth of 2400 MHz.
 2. It is assumed that ASP will package fiber receiver boards so that they are compatible with blind-mate connection to the FSM single-height Eurocard boards.
 
 ## Timing and Synchronization (TS)
 
-1. TS should deliver a time reference signal (assumed to be a 375 Hz square wave with fast edges) which is resolvable at the precision of NTP.
-2. TS distribution hardware is integrated into the FSM subrack backplane, and includes PLLs on the FSM carrier board. These need to be designed in collaboration with the RCF FSM system, which assumes that this backplane also delivers power and control signals.
+1. TS should deliver a time reference "sync" signal which is resolvable at the precision of NTP.
+2. The last stage of TS distribution hardware is integrated into the FSM subrack backplane, and TS hardware includes PLLs on the FSM carrier board. These need to be designed in collaboration with the RCF FSM system, which assumes that this backplane also delivers power and control signals. The full TS design is described in @ts-design.
 
 ## Central Control Network (CNW)
 
-1. CNW is assumed to provide a 1 GbE network switch with at least 24 RJ45 ports in each of the 27 RCF 19" equipment racks.
+1. CNW is assumed to provide a 1 GbE network switch for each RCF rack with sufficient ports to connect all equipment in this rack. The preliminary design requires at least 16 RJ45 ports in each of the 27 RCF 19" equipment racks.
 
 ## Monitor and Control (MC)
 
@@ -30,11 +30,11 @@ Dependencies of RCF on other DSA2000 subsystems are as follows:
 
 ## Signal Data Network (SNW)
 
-1. SNW must provide a network switch to each of 26 racks capable of linking:
+1. SNW must provide a network switch in each of 26 racks capable of linking:
     1. 160 25 GbE links (to FSM boards)
     2. 2 100 GbE links (to RCF beamforming rack)
     2. at least 20 100 GbE links (or similar bandwidth; to RCP)
-2. SNW must provide one rack with two switches, each having at least 58 100 GbE ports.
+2. SNW must provide one rack -- the "beamforming rack" -- with two switches, each having at least 58 100 GbE ports.
 
 ## Radio Camera Processor (RCP)
 

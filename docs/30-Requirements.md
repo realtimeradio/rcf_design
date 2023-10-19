@@ -94,17 +94,6 @@ The following requirement aims to explicitly ensure this is enabled by the RCF d
 
 - *RcfR-0006*: Over a period of 100 hours, when measured in the solar barycenter rest frame, the center frequency of any RCF frequency channel shall not shift by $>10\%$ of the channel width.
 
-<!--
-\subsubsection{Doppler Tracking}
-
-The maximum Doppler correction due to the orbit of the Earth is approximately 30 km/s, which is a shift of 200 kHz at 2 GHz. This velocity also represents a differential shift of 0.1 kHz over 1 MHz of bandwidth.
-
-Assuming that the DSA RCF implements a two-stage filterbank, the consequence of the shift at 2 GHz is that the edge 200 kHz (at the high-frequency end of the band) of each first-stage frequency channel is unusable.
-
-The consequence of the differential shift is that, even it the first-stage filterbank channels are Doppler tracked, some residual frequency shift will persist over the width of these channels.
-If the extent of this shift is unacceptable, it may be necessary to track some first-stage channels to multiple Doppler velocities, and then ...
--->
-
 ## Delay & Phase tracking
 
 In order that DSA2000's imaging system is able to correlate and integrate signals from multiple antennas for ~seconds, it is necessary that the signals from each antenna are delayed and phase-aligned to a common reference.
@@ -124,17 +113,19 @@ where $c$ is the speed of light, and $B_{\textrm{max}}$ is the maximum baseline 
 For the DSA, $B_{\textrm{max}} = 15$ km and **the maximum geometric delay is 50 \textmu s.**
 
 Assuming that digitization of signals from all antennas occurs in a central location, further inter-antenna delays are introduced by analog cabling (and, to a lesser extent, other instrumentation) between the antennas and digitizers.
-Assuming that cable length differences are of length $\sim B_{\textrm{max}}$, and the speed of light in a cable is $\sim \frac{2}{3}c$, **instrumental inter-antenna delays for the DSA2000 will be approximately 75 \textmu s.**
+Assuming that cable length differences are of length $\sim \frac{3}{2}B_{\textrm{max}}$ (the preliminary design expects a maximum cable length of 21 km [@fac-design]), and the speed of light in a cable is $\sim \frac{2}{3}c$, **instrumental inter-antenna delays for the DSA2000 will be approximately 110 \textmu s.**
 
 Compensation of both geometric and instrumental delays is achieved in a radio telescope's digital processing by using memory buffers to delay the earliest arriving data streams such that they may be coherently combined with the latest arriving.
 The practical implementation of this scheme may utilize buffering in either, or both, of  RCF and RCP.
 For the purposes of producing a viable RCF design, the following requirements are used:
 
  - *RcfR-0007*: RCF shall have sufficient time delay buffers to compensate for DSA2000's maximum geometric delay, 50 \textmu s
- - *RcfR-0008*: Where RCF is required to generate beams from multiple antenna elements, it must be capable of compensating for both instrumental and geometric delays, totalling 125 \textmu s.
+ - *RcfR-0008*: Where RCF is required to generate beams from multiple antenna elements, it must be capable of compensating for both instrumental and geometric delays, up to 200 \textmu s.
 
 Implicit in the first requirement is a statement that RCF need not use time-delay buffers to compensate for all instrumental delays before emitting data to RCP.
+This substantially reduces the amount of high-bandwidth memory required by RCF, while still allowing glitch-less tracking of any source.
 It is assumed that large - and mostly stable - instrumental delays corresponding to multiples of the channelized sample period may be absorbed into the RCP buffering system.
+
 
 ### Fine Delay
 
@@ -191,7 +182,7 @@ The following table summarises the derived RCF requirements:
 | *RcfR-0005* | RCF shall generate channels which attenuate a signal at the center of an adjacent channel by $\geq 60$ dB. |
 | *RcfR-0006* | Over a period of 100 hours, the center frequency of any RCF frequency channel shall not shift by $>10\%$ of the channel width. |
 | *RcfR-0007* | RCF shall have sufficient time delay buffers to compensate for up to 50 \textmu s delay in the time-domain for all data products. |
-| *RcfR-0008* | Where RCF is required to generate beams from multiple antenna elements, it must be capable of compensating for delays up to 125 \textmu s. |
+| *RcfR-0008* | Where RCF is required to generate beams from multiple antenna elements, it must be capable of compensating for delays up to 160 \textmu s. |
 | *RcfR-0009* | RCF shall ensure that, after applying a delay correction to a data stream to phase it to a particular sky position, the residual error across any frequency channel shall be $<1^\circ$. |
 | *RcfR-0010* | RCF shall be capable of updating the delay applied to each antenna signal at least 2628 times per second. |
 | *RcfR-0011* | RCF shall form 4 dual-polatization voltage streams, using the *TC* data products defined by *RcfR-0004*. |

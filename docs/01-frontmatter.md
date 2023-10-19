@@ -26,4 +26,9 @@ revisions:
   sections: 3. Design
   remarks: Typo fixes. Cross-ref fixes. Table overflow fixes.
   authors: JH
+- version: 3
+  date: 2023-10-19
+  sections: all
+  remarks: Changes after internal review
+  authors: JH
 ...

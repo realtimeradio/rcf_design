@@ -1,4 +1,4 @@
-# Requirements
+# Requirements \label{sec:Requirements}
 
 A number of science requirements are defined for the DSA2000 system, each designated by a unique identifier of the form "ScR-XXXX".
 

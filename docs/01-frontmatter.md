@@ -41,4 +41,8 @@ revisions:
   sections: all
   remarks: Minor grammar / formatting fixes
   authors: JH
+- version: 4
+  date: 2023-10-20
+  sections: Introduction
+  remarks: Add introduction
 ...

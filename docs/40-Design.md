@@ -1,8 +1,8 @@
-# Design
+# Design \label{sec:Design}
 
 Here, the preliminary design of the Radio Camera Frontend (RCF) is described and justified.
 
-## Interfaces
+## Interfaces \label{sec:Interfaces}
 
 The top-level RCF interfaces to other DSA2000 subsystems are shown in Figure \ref{fig:rcf-interfaces} and are as follows:
 
@@ -19,7 +19,7 @@ The top-level RCF interfaces to other DSA2000 subsystems are shown in Figure \re
 
 The basic specifications for these interfaces are described in Section \ref{sec:dependencies}.
 
-## Processing
+## Processing \label{sec:Processing}
 
 The data products which must be produced by RCF are:
 
@@ -34,7 +34,7 @@ These are used by PT for pulsar timing. Each beam should cover the band 700 - 20
 It is assumed that the two polarizations of each beam will correspond to the native polarizations of the DSA2000 antennas.
 
 
-## Hardware
+## Hardware \label{sec:Hardware}
 
 RCF requires hardware to digitize and process the 4096 RF signals provided by ASP.
 Since ASP is responsible for transporting all analog signals to a central processing facility, RCF is free to use a hardware architecture that requires that any number of signals be processed in each physical hardware module.

@@ -38,7 +38,7 @@ It is assumed that the two polarizations of each beam will correspond to the nat
 
 RCF requires hardware to digitize and process the 4096 RF signals provided by ASP.
 Since ASP is responsible for transporting all analog signals to a central processing facility, RCF is free to use a hardware architecture that requires that any number of signals be processed in each physical hardware module.
-However, for simplicity and modularity, the chosen RCF architecture is one which uses a separate ``FPGA Station Module'' (FSM) to process a dual-polarization pair of signals from a single DSA antenna.
+However, for simplicity and modularity, the chosen RCF architecture is one which uses a separate "FPGA Station Module" (FSM) to process a dual-polarization pair of signals from a single DSA antenna.
 This architecture thus requires 2048 FSMs (plus some provision of spares) to process signals from the full DSA telescope.
 Though this results in a larger number of modules than an equivalent architecture where multiple antennas are processed on common hardware, this design has the following beneficial features:
 
@@ -111,7 +111,7 @@ A block diagram of the FSM carrier is shown in Figure \ref{fig:rcf-fsm}.
 The board has the following features:
 
 1. Based around the 100 mm x 220 mm Eurocard form factor, which allows sufficient area for necessary components and can be vertically mounted in a 3U-high subrack of a standard 19" rack.
-2. A backplane connector to allow power, timing reference signals (see [@ts-design]), and control and monitoring signals -- including a 1 Gb Ethernet connection -- to be delivered to the FSM over a backplane with no cables.
+2. A backplane connector to allow power, timing reference signals (see @ts-design), and control and monitoring signals -- including a 1 Gb Ethernet connection -- to be delivered to the FSM over a backplane with no cables.
 3. Blind-mate coaxial connectors to allow RF signals to be delivered from an analog fiber receiver board to the FSM ADC without the need for cables.
 4. A blind-mate connector carrying power and low-speed data (eg. I2C) to allow the FSM to supply power and a control and monitoring interface to a connected analog fiber receiver (FRX) board. The FRX is part of the ASP subsystem and is responsible for receiving analog-over-fiber signals from the DSA antennas and converting these to an electrical interface.
 5. Basic peripherals for use during development, including an SD card form which the SoM CPU may be booted, and a USB serial interface for debugging.
@@ -125,7 +125,7 @@ Design of the carrier will likely be contracted to the SoM vendor, iWave Systems
 
 ### FSM 19" Subrack
 
-It is desirable for FSMs - of which there are more than 2000 - to be mounted in a standard 19" equipment rack, in a manner that makes it as easy as possible to replace a faulty module.
+It is desirable for FSMs -- of which there are more than 2000 -- to be mounted in a standard 19" equipment rack, in a manner that makes it as easy as possible to replace a faulty module.
 
 FSMs are designed to be compatible with 19" subracks supporting the Eurocard standard.
 Such subracks are readily available from a variety of vendors, and are readily configurable to accommodate cards of different lengths and widths, with backplanes either conforming to an industry standard, or custom-designed to suit the needs of the system.
@@ -147,13 +147,13 @@ With heat-sinks fitted, the FSMs are 1.6 inches (8HP) wide, and thus 10 FSMs may
 ### Subrack Management Card \label{sec:SubrackManagement}
 
 Since the RCF system contains more than 2000 FSMs, densely packed in a relatively small number of racks, it is desirable to avoid the need for each FSM to have a cabled 1 GbE control and monitoring connection.
-To this end, a "Subrack Management Card" (SRM, Figure \ref{fig:srm}) is included in each subrack, which uses a 1 GbE switch chip to allow all FSMs in a subrack to be reached via a single RJ45 Ethernet connection, via the subrack backplane.
-The SRM is not a critical part of the RCF design - all FSM boards have an RJ45 connector to allow each to be individually connected to the control network - but makes use of the fact that 4HP of spare space is available in each 10-FSM subrack.
+To this end, a "Subrack Manager" card (SRM, Figure \ref{fig:srm}) is included in each subrack, which uses a 1 GbE switch chip to allow all FSMs in a subrack to be reached via a single RJ45 Ethernet connection, via the subrack backplane.
+The SRM is not a critical part of the RCF design -- all FSM boards have an RJ45 connector to allow each to be individually connected to the control network -- but makes use of the fact that 4HP of spare space is available in each 10-FSM subrack.
 
 ![\label{fig:srm} A "Subrack Management Card", which implements 1Gb Ethernet switching functionality to allow all RCF boards in a rack to be reached via a single RJ45 Ethernet connection.](images/srm.drawio.pdf){width=70%}
 
 The SRM also features a small CPU subsystem based on a single System-in-Package (SiP) chip, which facilitates connecting to the debug interfaces of the FSMs in the subrack.
-This feature - somewhat similar to the "out-of-band" management often supported by rack-mounted CPU servers - is designed to allow remote, low-level diagnostics in the event of any software issues which may render the FSMs unresponsive to their usual Ethernet control interface.
+This feature -- somewhat similar to the "out-of-band" management often supported by rack-mounted CPU servers -- is designed to allow remote, low-level diagnostics in the event of any software issues which may render the FSMs unresponsive to their usual Ethernet control interface.
 
 ### Rack Layout \label{sec:RackLayout}
 
@@ -257,7 +257,7 @@ Once ADC sample streams for a polarization pair are received by a JESD204C recei
 1. Time stamping, where a counter which represents the telescope's time is used to associate a precise timestamp with each ADC sample. A telescope time (TT) counter is maintained on each FPGA and all are synchronized by the TS system [@ts-design]. Timestamps is used to label data which are transmitted to downstream processors, and is also used internally to ensure proper timekeeping in the delay and phase tracking system.
 2. Coarse delay correction up to 81920 ADC sampled (up to 51.2 \textmu s at a sample rate of 1600 Msps).
 3. First-stage Polyphase Filter Bank (PFB) generating 256 channels, each 8.33 MHz wide and overlapping by a factor of $\frac{4}{3}$.
-4. Fine-Delay correction and phase-rotation, to allow the phase and delay of each signal path to be tracked as the sky rotates, and to allow small frequency shifts to be applied to each 8.33 MHz channel to allow potential compensation for any source Doppler shift.
+4. Fine delay correction and phase rotation, to allow the phase and delay of each signal path to be tracked as the sky rotates, and to allow small frequency shifts to be applied to each 8.33 MHz channel to allow potential compensation for any source Doppler shift.
 5. Four parallel second-stage filterbank pathways, generating channels at NC, AC, BC, and TC resolutions, and removing the $\frac{4}{3}$ overlap between channels.
 6. Requantization of output data to 4+4 bit complex resolution, after multiplication by a frequency-dependent gain factor that can be used to compensate for analog gain slope.
 7. Packetization of data into a stream of UDP packets output to the SNW system over a pair of 25 GbE connections.
@@ -299,9 +299,9 @@ Fine delay correction and phase rotation are implemented as a multiplication of 
 
 The phase of this exponential varies over time, and compensates for the changing path lengths from source to antenna, as well as the related effects of the upstream digital LO.
 
-A tiered approach to time-keeping is used to ensure that phasor values may be updated sufficiently quickly without the need for high data-rate communication between the RCF and MC subsystems.
+A tiered approach to time-keeping is used to ensure that phasor values may be updated sufficiently quickly without the need for high data-rate communication between the TS and RCF subsystems.
 
-1. Messages from MC to RCF are sent at a rate of ~1 Hz, and contain a delay polynomial which specifies the delay to be applied to a given antenna at a given time.
+1. Messages from TS to RCF are sent at a rate of ~1 Hz, and contain a delay polynomial which specifies the delay to be applied to a given antenna at a given time.
 2. Every ~100ms, a CPU-based delay control module calculates the delay, phase, and per-spectrum delay-increment and phase-increment which should be applied to a pipeline's signals. This delay, phase, delay-rate, and phase-rate are written to FPGA registers, and a new coarse delay is set. A timed trigger is used so that all new parameters are applied to data simultaneously.
 3. Every ~1 \textmu s, the phasors to be applied to each 8.33 MHz channel are updated by the FPGA.
 
@@ -332,7 +332,7 @@ The TC filter has 24 taps, and a response shown in Figure \ref{fig:stage2tc-resp
 
 ![\label{fig:stage2tc-response}The PFB response of the second stage filters for TC channelization products.](images/second_stage_pfb_tc_response_1xscale.pdf)
 
-Other pulsar timing experiments have found it beneficial to tune passband shape to give better isolation at the expense of passband width [@Bailes2020].
+Other pulsar timing experiments have found it beneficial to tune passband shape to give better inter-channel isolation at the expense of passband width [@Bailes2020].
 If necessary, it is easy to modify the shape of the TC filters in a similar fashion, as shown in Figure \ref{fig:stage2tc-response-scale}, without impacting other data products.
 
 ![\label{fig:stage2tc-response-scale}A possible PFB response of the second stage filters for TC channelization products with the filter passbands set to 85% of their usual width.](images/second_stage_pfb_tc_response_0.85xscale.pdf)
@@ -349,7 +349,7 @@ This functionality, which is still in development, is intended to be used to sup
 
 Data are reordered and packetized into a stream of UDP packets.
 Each packet contains a header which indicates the timestamp, source antenna and frequency channels present in the packet's payload.
-NC, AC, or BC data are transmitted over 25 GbE to destinations in the RCP system using the format described in [@icd-rcf-rcp].
+NC, AC, or BC data are transmitted over 25 GbE to destinations in the RCP system using the format described in @icd-rcf-rcp.
 TC data are transmitted over 25 GbE to FPGAs within the same rack, such that each of 78 FPGAs in a rack receive 8 frequency channels of TC data from all dishes serviced by the rack.
 
 Since data entering the packetization system has been quantized to 4+4-bit, it has substantially lower data rate than earlier in the system.

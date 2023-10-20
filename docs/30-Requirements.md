@@ -133,7 +133,7 @@ For any digital system which implements time-domain delay compensation using a s
 Errors of 0.5 samples in the delay applied to a complex data stream equate to residual phase errors over the Nyquist band being processed of up to $\frac{\pi}{2}$ radians (or $\frac{\pi}{4}$ for a real signal).
 In principle, this residual phase slope across the observing band may corrected in downstream processing outside of RCF. However, this requires that the downstream processor knows the delay applied to the data stream (and its resulting error) at any given time.
 
-Processing is simplified if RCF implements a *fine-delay* - that is, a sub-sample delay which is applied as a phase to each frequency channel - within its processing pipeline.
+Processing is simplified if RCF implements a *fine-delay* -- that is, a sub-sample delay which is applied as a phase to each frequency channel -- within its processing pipeline.
 
 A requirement is created to ensure that RCF implements a fine delay:
 

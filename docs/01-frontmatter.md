@@ -36,4 +36,9 @@ revisions:
   sections: Glossary
   remarks: Expand gloassary
   authors: JH
+- version: 3.1.1
+  date: 2023-10-20
+  sections: all
+  remarks: Minor grammar / formatting fixes
+  authors: JH
 ...

@@ -31,9 +31,9 @@ Dependencies of RCF on other DSA2000 subsystems are as follows:
 ## Signal Data Network (SNW)
 
 1. SNW must provide a network switch in each of 26 racks capable of linking:
-    1. 160 25 GbE links (to FSM boards)
-    2. 2 100 GbE links (to RCF beamforming rack)
-    2. at least 20 100 GbE links (or similar bandwidth; to RCP)
+    1. 160 25 GbE links, to FSM boards
+    2. 2 100 GbE links, to RCF beamforming rack
+    2. at least 20 100 GbE links (or a smaller number of faster links providing similar aggregate bandwidth), to RCP
 2. SNW must provide one rack -- the "beamforming rack" -- with two switches, each having at least 58 100 GbE ports.
 
 ## Radio Camera Processor (RCP)

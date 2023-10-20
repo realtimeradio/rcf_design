@@ -31,4 +31,9 @@ revisions:
   sections: all
   remarks: Changes after internal review
   authors: JH
+- version: 3.1
+  date: 2023-10-20
+  sections: Glossary
+  remarks: Expand gloassary
+  authors: JH
 ...
